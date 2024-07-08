@@ -3,6 +3,8 @@ import { ClearanceDeals } from '../Data'
 import ClearanceItem from './ClearanceItem'
 
 const Clearance = () => {
+    
+
   return (
     <>
          
@@ -17,7 +19,7 @@ const Clearance = () => {
                     ClearanceDeals.map((ClearanceDeals)=>{
                         return (
                              <div className=''>
-                                 <ClearanceItem key={ClearanceDeals.name} {...ClearanceDeals}/>
+                                 <ClearanceItem key={ClearanceDeals} {...ClearanceDeals}/>
                              </div>
                             // <ClearanceItem/>
                         )

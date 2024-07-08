@@ -14,6 +14,7 @@ import chair5 from './assets/chair5.png'
 
 export const ClearanceDeals = [
     {
+        id: 1,
         image: chair2,
         name: 'Chair 1',
         description: 'Clearance',
@@ -21,6 +22,7 @@ export const ClearanceDeals = [
         amount: 10000
     },
     {
+        id: 2,
         image: chair2,
         name: 'chair2',
         description: 'hjnkml,.',
@@ -28,6 +30,7 @@ export const ClearanceDeals = [
         amount: 20000
     },
     {
+        id: 3,
         image: chair2,
         name: 'chair3',
         description: 'hjnkml,.',
@@ -35,6 +38,8 @@ export const ClearanceDeals = [
         amount: 30000
     },
     {
+        id: 4,
+       
         image: chair2,
         name: 'chair4',
         description: 'hjnkml,.',
@@ -48,6 +53,7 @@ export const ClearanceDeals = [
 
 export const News =[
     {
+        id: 1,
         picture: chair2 ,
         content: 'New Chair ',
         price: 200

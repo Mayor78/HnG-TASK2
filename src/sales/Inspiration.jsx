@@ -5,14 +5,14 @@ import furniture2 from '../assets/furniture1 (2).jpg'
 const Inspiration = () => {
   return (
     <>
-    <div className='bg-gray-500 p-6'>
-        <div>INSPIRATIONAL IDEALS</div>
+    <div className='bg-tertiary  p-6'>
+        <div className='flex place-content-center text-2xl font-semibold place-items-center justify-center mb-9'>INSPIRATIONAL IDEALS</div>
         <div className=''>
-              <div className='grid md:flex justify-center place-items-center'>
-                <img className='w-[20rem] h-[18rem] ' src={furniture} alt="" />
-                  <div className='bg-white py-12 px-10 flex place-content-center place-items-center justify-center'>
-                    <h1 className=''>Living room
-                        <p className='text-wrap '>Lorem ipsum dolor sit amet consectetur <br />
+              <div className='grid md:flex justify-center  gap-2 place-items-center'>
+                <img className='w-[28rem] h-[23rem] mx-4 md:mx-0' src={furniture} alt="" />
+                  <div className='bg-white w-[28rem] h-[23rem]'>
+                    <h1 className='flex place-content-center text-2xl font-semibold place-items-center justify-center'>Living room</h1>
+                        <p className='l leading-1 font-serif w-[70%] h-[70%] ml-14 '>Lorem ipsum dolor sit amet consectetur <br />
                              Enim modi debitis similique eius aut vitae itaque mollitia <br />
                               nulla, hic obcaecati neque? Rerum nemo laudantium laboriosam <br />
                               dolor optio corporis molestiae quas?
@@ -21,14 +21,13 @@ const Inspiration = () => {
                               nulla, hic obcaecati neque? Rerum nemo laudantium laboriosam <br />
                               dolor optio corporis molestiae quas?
                               </p>
-                    </h1>
+                    
                   </div>
               </div>
-              <div className='grid md:flex justify-center place-items-center mt-4'>
-                <img className='w-[20rem] h-[18rem] ' src={furniture} alt="" />
-                  <div className='bg-white py-12 px-10 flex place-content-center place-items-center justify-center'>
-                    <h1>Living room
-                        <p className='l leading-2 '>Lorem ipsum dolor sit amet consectetur <br />
+              <div className='grid md:flex justify-center gap-2 place-items-center mt-4'>
+              <div className='bg-white w-[28rem] h-[23rem] '>
+                       <h1 className='flex place-content-center text-2xl font-semibold place-items-center justify-center'>Living room</h1>
+                        <p className='l leading-1 font-serif w-[70%] h-[70%] ml-14 '>Lorem ipsum dolor sit amet consectetur <br />
                              Enim modi debitis similique eius aut vitae itaque mollitia <br />
                               nulla, hic obcaecati neque? Rerum nemo laudantium laboriosam <br />
                               dolor optio corporis molestiae quas?
@@ -37,8 +36,10 @@ const Inspiration = () => {
                               nulla, hic obcaecati neque? Rerum nemo laudantium laboriosam <br />
                               dolor optio corporis molestiae quas?
                               </p>
-                    </h1>
-                  </div>
+                              </div>
+                              <div>
+                <img className='w-[28rem] h-[23rem] ' src={furniture2} alt="" />
+                </div>
               </div>
         </div>
         </div>

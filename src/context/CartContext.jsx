@@ -33,8 +33,27 @@ export const CartProvider = ({ children }) => {
     toast.info("Item removed from cart");
   };
 
+
+  const decreaseQuantity = (productId) => {
+    setCart((prevCart) => {
+      const existingProduct = prevCart.find(item => item.id === productId);
+      if (existingProduct.quantity === 1) {
+       
+        return prevCart.filter(item => item.id !== productId);
+      } else {
+        return prevCart.map(item => 
+          item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
+          
+        );
+        
+      }
+      
+    });
+    toast.info("product Quantity decrease");
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, totalItems }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart,decreaseQuantity, totalItems }}>
       {children}
     </CartContext.Provider>
   );

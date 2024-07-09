@@ -16,6 +16,7 @@ const CartPage = ({ image, name, description, amount, icon, oldprice }) => {
         <p>Your cart is empty</p>
       ) : (
         <div className="cart-list ">
+         
           <div className='details flex justify-around mt-3 p-3 font-semibold text-1xl bg-primary'>
             <h1>Product</h1>
             <h1 className='relative left-[4rem]'>UnitPrice</h1>
@@ -56,10 +57,28 @@ const CartPage = ({ image, name, description, amount, icon, oldprice }) => {
                  
               </div>
              
+             
+             
             </div>
             
+
+
+            
           ))}
+           <div className='flex justify-end gap-[4rem] mr-20'>
+              <h1 className='text-2xl font-semibold'>Subtotal: </h1>
+                <p className='text-2xl font-semibold'>${cart.reduce((acc, product) => acc + product.amount * product.quantity, 0)}</p>
+             
+              {/* <button onClick={() => cart.forEach(product => removeFromCart(product.id))}>Empty Cart</button> */}
+              </div>
+              <div className=' flex justify-end mr-16 mt-10'>
+                
+                 <Link to={'/checkout'} class="bg-blue-500 hover:bg-blue-700  text-white font-bold py-2 px-4 rounded">
+                 Checkout
+                      </Link>
+              </div>
         </div>
+
       )}
     </div>
   );

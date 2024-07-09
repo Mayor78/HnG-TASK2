@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { IoIosHeartEmpty } from "react-icons/io";
+import { CartContext } from '../context/CartContext';
+import { BsCart } from 'react-icons/bs';
 
-const NewInStoreItem = ({picture, content, price}) => {
+const NewInStoreItem = ({image, name, amount}) => {
+  const {addToCart} = useContext(CartContext)
 
     const clipPathStyle = {
         clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), 90% 100%, 80% calc(100% - 10px), 70% 100%, 60% calc(100% - 10px), 50% 100%, 40% calc(100% - 10px), 30% 100%, 20% calc(100% - 10px), 10% 100%, 0 calc(100% - 10px))',
@@ -23,11 +26,13 @@ const NewInStoreItem = ({picture, content, price}) => {
                     
  
                 </div>
-        <img src={picture} alt='Product' />
+        <img src={image} alt='Product' />
         </div>
         <div className=' flex gap-6 p-2 justify-between bg-slate-400'>
-        <h3>{content}</h3>
-         <p className='text-red-500'>${price}</p>
+        <h3>{name}</h3>
+         <p className='text-red-500'>${amount}</p>
+         <button onClick={() => addToCart({id: Math.random(), image, name, amount})}
+          className=' text-white w-full py-2 rounded-md '><BsCart/></button>
         
         </div>
         

@@ -14,7 +14,7 @@ const Clearance = () => {
             <div className='overflow-hidden px-6'>
 
            
-            <div className='flex gap-3 overflow-x-auto whitespace-nowrap scroll-smooth hide-scrollbar p-6'>
+            <div className='flex gap-3 mx-10 overflow-x-auto whitespace-nowrap scroll-smooth hide-scrollbar p-6'>
                 {
                     ClearanceDeals.map((ClearanceDeals)=>{
                         return (

@@ -19,7 +19,7 @@ export const CartProvider = ({ children }) => {
         toast.info("Product quantity increased");
         return prevCart.map(item =>
           item.id === product.id
-            ? { ...item, quantity: (item.quantity || 1) + 1 }
+            ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
@@ -33,27 +33,23 @@ export const CartProvider = ({ children }) => {
     toast.info("Item removed from cart");
   };
 
-
   const decreaseQuantity = (productId) => {
-    setCart((prevCart) => {
+    setCart(prevCart => {
       const existingProduct = prevCart.find(item => item.id === productId);
       if (existingProduct.quantity === 1) {
-       
+        toast.info("Item removed from cart");
         return prevCart.filter(item => item.id !== productId);
       } else {
+        toast.info("Product quantity decreased");
         return prevCart.map(item => 
           item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
-          
         );
-        
       }
-      
     });
-    toast.info("product Quantity decrease");
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart,decreaseQuantity, totalItems }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, decreaseQuantity, totalItems }}>
       {children}
     </CartContext.Provider>
   );

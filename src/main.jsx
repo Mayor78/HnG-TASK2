@@ -14,6 +14,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import CartPage from './pages/CartPage.jsx';
 import { CartProvider } from './context/CartContext.jsx'; // Import CartProvider
 import Checkout from './pages/CheckOut.jsx';
+import AllProducts from './pages/AllProducts.jsx';
+import TransferPayment from './pages/TransferPayment.jsx';
+import Bedroom from './pages/Bedroom.jsx';
 
 const router = createBrowserRouter([
   {
@@ -23,11 +26,16 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'signup', element: <SignUp /> },
+       {path: 'bedroom', element: <Bedroom/>},
       { path: 'login', element: <Login /> },
       { path: 'about', element: <About /> },
       { path: 'services', element: <Services /> },
       { path: 'cart', element: <CartPage /> },
       { path: 'checkout', element: <Checkout /> }, 
+      { path: 'all-product', element: <AllProducts /> },
+      { path: 'transfer-payment', element: <TransferPayment /> }, 
+      
+
     ],
   },
 ]);

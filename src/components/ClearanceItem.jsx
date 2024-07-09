@@ -2,8 +2,7 @@ import React, { useContext } from 'react';
 import { GiHandBag } from 'react-icons/gi';
 import { IoIosHeartEmpty } from "react-icons/io";
 import { CartContext } from '../context/CartContext';
-import { ClearanceDeals } from '../Data';
-import { toast } from 'react-toastify';
+
 
 const ClearanceItem = ({ image, name, description, amount, icon, oldprice }) => {
   const { addToCart } = useContext(CartContext);

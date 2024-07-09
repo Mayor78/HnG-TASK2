@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoIosHeartEmpty } from "react-icons/io";
 import { BsTrash } from "react-icons/bs";
 import { toast } from 'react-toastify';
 
 const CartPage = () => {
   const { cart, removeFromCart, addToCart, decreaseQuantity } = useContext(CartContext);
+  
 
   const handleRemoveFromCart = (productId) => {
     removeFromCart(productId);
-    // toast.info("Item removed from cart");
+    toast.info("Item removed from cart");
   };
 
   const handleIncreaseQuantity = (product) => {
@@ -20,6 +21,8 @@ const CartPage = () => {
   const handleDecreaseQuantity = (productId) => {
     decreaseQuantity(productId);
   };
+
+ 
 
   return (
     <div className="container mx-auto p-4">

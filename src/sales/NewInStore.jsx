@@ -2,6 +2,7 @@
 import React from 'react';
 import { News } from '../Data';
 import NewInStoreItem from '../components/NewInStoreItem';
+import { Link } from 'react-router-dom';
 
 const NewInStore = () => {
   return (
@@ -10,13 +11,16 @@ const NewInStore = () => {
       <div className='overflow-hidden px-6'>
         <div className='flex gap-3 overflow-x-auto whitespace-nowrap scroll-smooth hide-scrollbar'>
           {
-            News.map((newsItem) => (
+               News.slice(0,8).map((newsItem) => (
               <div key={newsItem.name} className='flex '>
                 <NewInStoreItem {...newsItem} />
               </div>
             ))
           }
         </div>
+      </div>
+      <div className="text-center mt-4">
+        <Link to="/all-product" className="text-blue-500 hover:underline">View All</Link>
       </div>
     </div>
   );

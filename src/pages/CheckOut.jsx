@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const Checkout = () => {
@@ -28,6 +28,12 @@ const Checkout = () => {
     e.preventDefault();
     // Handle form submission logic
     console.log(formData);
+  };
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    const totalAmount = cart.reduce((acc, product) => acc + product.amount * product.quantity, 0);
+    navigate('/transfer-payment', { state: { totalAmount } });
   };
 
   const totalPrice = cart.reduce((total, item) => total + item.amount * item.quantity, 0);
@@ -127,6 +133,12 @@ const Checkout = () => {
               />
             </div>
             <h2 className="text-xl font-semibold mb-2">Payment Information</h2>
+             <div>
+                <button onClick={handleCheckout} className="text-blue-500 hover:text-blue-700" >
+
+                  Pay with Transfer
+                </button>
+             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1">Card Number</label>
               <input 

@@ -56,7 +56,7 @@ const Header = () => {
                   variants={itemVariants}
                   initial="hidden"
                   animate="visible" className='py-3'>
-            <Link to={'/about'}>Bedroom</Link>
+            <Link to={'/bedroom'}>Bedroom</Link>
             </motion.li>
             <motion.li
                   variants={itemVariants}
@@ -90,13 +90,13 @@ const Header = () => {
             <Link to={'/about'}>Kitchen & Dinning</Link>
             </li>
             <li>
-            <Link to={'/contact'}>Bedroom</Link>
+            <Link to={'/bedroom'}>Bedroom</Link>
             </li>
             <li>
-            <Link to={'/login'}>Storage Furniture</Link>
+            <Link to={'/login'}>Login</Link>
             </li>
             <li>
-              <Link to={'/signup'}>Home Office & Study</Link>
+              <Link to={'/signup'}>signup</Link>
             </li>
 
             

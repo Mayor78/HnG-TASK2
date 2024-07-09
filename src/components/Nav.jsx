@@ -13,7 +13,7 @@ const Nav = () => {
                 <Link to={'/'} className='font-bold text-2xl text-white mt-2'>HNG</Link>
                   <input type="search" placeholder='serach...'  
                   className='w w-[40%] m-2 p-2 rounded-md focus:outline-blue-500 focus:shadow-outline' />
-                  <label htmlFor=""><i className="fa-solid fa-magnifying-glass relative right-[11rem] top-4 "></i></label>
+                  <label htmlFor=""><i className="fa-solid fa-magnifying-glass relative md:right-[11rem] right-[3rem] top-4 "></i></label>
                   <div className='flex gap-6 mt-3 text-white'>
                     
                     <h1 className='hidden md:flex mt-1'>CONTACT US</h1>

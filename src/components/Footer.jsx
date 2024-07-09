@@ -3,7 +3,7 @@ import React from 'react'
 const Footer = () => {
   return (
     < >
-       <div className='big wrapper text-white  mt-4 bg-blue-950 grid grid-col-1 md:grid-cols-2 lg:grid-cols-4'>
+       <div className='big wrapper text-white overflow-hidden  mt-4 bg-blue-950 grid grid-col-1 md:grid-cols-2 lg:grid-cols-4'>
          
           <div className='contact-container mx-6 md:mx-2 mt-4'>
              <h2 className='font-semibold text-2xl'>Contact Us</h2>

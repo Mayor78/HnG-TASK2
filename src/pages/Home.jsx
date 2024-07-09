@@ -16,6 +16,7 @@ const Home = () => {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    
     // color: 'white',
     // fontSize: '3rem',
     // position: 'relative',
@@ -25,7 +26,7 @@ const Home = () => {
   return (
     <>
     <div>
-    <div className='  h-[50vh]' style={ imagestyle}>
+    <div className='  h-[50vh] overflow-hidden' style={ imagestyle}>
          <div className='bg-white-50 p-16'>
           <h1 className='text-2xl font-bold mb-2'>HomeNest Gallery (HNG)</h1>
           <p className='font-semibold'> Redefining Furniture Shopping in <br /> 

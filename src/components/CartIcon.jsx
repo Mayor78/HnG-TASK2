@@ -11,7 +11,7 @@ const CartIcon = () => {
       <Link to="/cart">
         <GiShoppingCart className="text-3xl" />
         {totalItems > 0 && (
-          <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full px-2 py-1 text-xs">
+          <span className="absolute top-[-10px] right-[-5px] bg-red-500 text-white rounded-full px-2 py-1 text-xs">
             {totalItems}
           </span>
         )}

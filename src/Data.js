@@ -1,5 +1,5 @@
 import chair1 from './assets/chair1 (1).jpg'
-import chair2 from './assets/chair2.png'
+import chair2 from './assets/daniil-silantev-1P6AnKDw6S8-unsplash.jpg'
 import chair3 from './assets/chair1 (3).png'
 import chair4 from './assets/chair1 (4).png'
 import chair5 from './assets/chair5.png'
@@ -43,6 +43,24 @@ export const ClearanceDeals = [
         description: 'Can do alot',
           oldprice: 40000,
         amount: 30000
+    },
+    {
+        id: 4,
+       
+        image: chair2,
+        name: 'chair4',
+        description: 'this chair',
+          oldprice: 50000,
+        amount: 40000
+    },
+    {
+        id: 4,
+       
+        image: chair2,
+        name: 'chair4',
+        description: 'this chair',
+          oldprice: 50000,
+        amount: 40000
     },
     {
         id: 4,

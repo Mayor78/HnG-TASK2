@@ -17,6 +17,7 @@ import Checkout from './pages/CheckOut.jsx';
 import AllProducts from './pages/AllProducts.jsx';
 import TransferPayment from './pages/TransferPayment.jsx';
 import Bedroom from './pages/Bedroom.jsx';
+import ProductDetails from './pages/ProductDetails.jsx';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
       { path: 'checkout', element: <Checkout /> }, 
       { path: 'all-product', element: <AllProducts /> },
       { path: 'transfer-payment', element: <TransferPayment /> }, 
+      { path:"/product/:id", element: <ProductDetails /> },
       
 
     ],

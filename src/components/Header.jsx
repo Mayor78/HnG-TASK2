@@ -45,13 +45,7 @@ const Header = () => {
                 className=' p-[3rem] text-white '> 
 
               
-             {/* <motion.li
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                 className='py-3'>
-             <Link to={'/home'}>Living Room </Link>
-            </motion.li> */}
+           
             <motion.li
                   variants={itemVariants}
                   initial="hidden"
@@ -83,9 +77,7 @@ const Header = () => {
          
            <ul className='hidden md:flex justify-evenly gap-4 top-0'>
             
-           {/* <li>
-           <Link to={'/home'}> Living Room </Link>
-            </li>  */}
+         
             <li>
             <Link to={'/about'}>Kitchen & Dinning</Link>
             </li>

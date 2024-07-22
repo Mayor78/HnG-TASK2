@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-
+import loader from '../assets/Spinner-2.gif'
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -46,7 +46,11 @@ const ProductDetails = () => {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className='flex justify-center place-items-center'>{
+      <div className='flex justify-center place-items-center w-[300px] h-[300px] bg-white rounded-full p-6 text-center'>
+        <img src={loader} alt={'loading....'}/></div>
+    }
+      </div>;
   }
 
   if (error) {

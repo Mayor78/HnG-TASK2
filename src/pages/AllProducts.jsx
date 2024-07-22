@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ClearanceDeals, News } from '../Data';
 import ProductCard from '../sales/ProductCard';
-
+import loader from '../assets/Spinner-2.gif'
 const AllProducts = () => {
   const productsPerPage = 6; // Number of products to show per page
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,6 +46,15 @@ const AllProducts = () => {
     loadProducts(page);
     setCurrentPage(page);
   };
+
+
+  if (loading) {
+    return <div className='flex justify-center place-items-center'>{
+      <div className='flex justify-center place-items-center w-[300px] h-[300px] bg-white rounded-full p-6 text-center'>
+        <img src={loader} alt={'loading....'}/></div>
+    }
+      </div>;
+  }
 
   return (
     <div className="container mx-auto p-7 bg-quaternary">

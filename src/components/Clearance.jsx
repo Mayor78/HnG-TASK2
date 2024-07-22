@@ -11,7 +11,7 @@ const Clearance = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get('http://localhost:3000/products');
-        console.log('API Response:', response.data);
+        // console.log('API Response:', response.data);
 
         if (Array.isArray(response.data)) {
           setProducts(response.data);

@@ -11,18 +11,28 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/products');
-        console.log('API Response:', response.data);
+        const [productsResponse, newProductsResponse] = await Promise.all([
+          axios.get('http://localhost:3000/products'),
+          axios.get('http://localhost:3000/newProducts')
+        ]);
 
-        if (Array.isArray(response.data)) {
-          const foundProduct = response.data.find(prod => prod.id.toString() === id);
-          if (foundProduct) {
-            setProduct(foundProduct);
-          } else {
-            setError('Product not found');
-          }
+        console.log('Products API Response:', productsResponse.data);
+        console.log('New Products API Response:', newProductsResponse.data);
+
+        let foundProduct = null;
+
+        if (Array.isArray(productsResponse.data)) {
+          foundProduct = productsResponse.data.find(prod => prod.id.toString() === id);
+        }
+
+        if (!foundProduct && Array.isArray(newProductsResponse.data)) {
+          foundProduct = newProductsResponse.data.find(prod => prod.id.toString() === id);
+        }
+
+        if (foundProduct) {
+          setProduct(foundProduct);
         } else {
-          throw new Error('Invalid data format');
+          setError('Product not found');
         }
       } catch (err) {
         console.error('Error fetching products:', err);
@@ -48,42 +58,35 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className='product-details bg-white p-4 rounded-md mt-4'>
-        <div className='product-image flex gap-4 mx-10'>
-        <img src={product.image} alt={product.title} className="w-[400px] h-[400px]" />
+    <div className='product-details  p-4 rounded-md mt-4'>
+      <div 
+      className='product-image grid md:flex gap-4 mx- md:mx-10 bg-white shadow-lg border border-solid '>
+        <img src={product.image || product.picture} alt={product.title || product.name} className="w-[400px] rounded-md h-[400px]" />
         <div>
-        <h1 className='text-3xl font-bold mt-4'>{product.title}</h1>
-        <span className='text-gray-500'>Added by: {'Mayor'}</span>
-        
-        <div className=' mt-20 flex gap-3'>
-        <p className='text-green-500 mt-2 text-3xl'>${product.price}</p>
-        <p className='text-gray-400 mt-4 text-lg'><strike>${product.oldPrice}</strike></p>
-        </div>
-        <div>
-            <button 
-            className='bg-orange-400 text-white p-4 rounded-md mt-20 hover:bg-orange-300'> 
-                Add To Cart</button>
-        </div>
-        </div>
-        
-        
-       
-        </div>
-            <h2 className='mb-10 mt-20 mx-10 text-3xl font-semibold'>Product Details</h2>
-          <div className='bg-white w-[60%] mx-6 '>
-          <p className='mt-2'>{product.description}</p>
+          <h1 className='text-3xl mx-3 md:mx-0 font-semi-bold mt-4'>{product.title || product.name}</h1>
+          <span className='text-gray-500 mx-3 md:mx-0'>Added by: {'Mayor'}</span>
+          <div className='mt-20 flex gap-3'>
+            <p className='text-green-500 mt-2 mx-3 md:mx-0 text-3xl'>${product.price || product.amount}</p>
+            {product.oldPrice && (
+              <p className='text-gray-400  mt-4 text-lg'><strike>${product.oldPrice}</strike></p>
+            )}
           </div>
-      
-     
-     
+          <div>
+            <button className='bg-orange-400 mx-3 md:mx-0 text-white p-4 rounded-md mt-10 mb-3 md:mt-20 hover:bg-orange-300'>
+              Add To Cart
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className='bg-white shadow-lg border border-solid md:mx-10 mt-7'>
+      <h2 className='mb-10 mt-20 mx-2 text-3xl font-semibold'>Product Details</h2>
+      <hr />
+      <div className=' leading-7 p-3 mx-6'>
+        <p className='mt-2'>{product.description || product.info}</p>
+      </div>
+    </div>
     </div>
   );
 }
 
 export default ProductDetails;
-
-
-
-
-    {/* <span className='text-gray-500'>Added by: {product.author}</span>
-            <span className='float-right text-gray-500'>{product.createdDate}</span> */}

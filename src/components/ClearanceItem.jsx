@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const ClearanceItem = ({ id, title, image, price, oldPrice, description }) => {
   const { addToCart } = useContext(CartContext);
   const shortDescription = description.length > 10 ? `${description.substr(0, 10)}... ` : description;
-
+  const shortTitle = title.length > 10 ? `${title.substr(0, 10)}... ` : title;
   return (
     <div className="clearance-item">
       <div className='w-[300px] bg-white-50 rounded-md'>
@@ -20,7 +20,7 @@ const ClearanceItem = ({ id, title, image, price, oldPrice, description }) => {
         
         <div className='bg-white h-auto'>
           <Link to={`/product/${id}`} className='flex justify-around'>
-            <h3>{title}</h3>
+            <h3>{shortTitle}</h3>
             <p dangerouslySetInnerHTML={{ __html: shortDescription }} />
           </Link>
           <div className='flex justify-around'>

@@ -25,7 +25,7 @@ const Header = () => {
       
     <>
        
-     <nav className="  backdrop:blur-lg bg-gray-300 p-4 spacing sticky z-10 top-0 ">
+     <nav className="  backdrop:blur-lg bg-blue-900 p-4 spacing sticky z-10 top-0 ">
      <Nav />
       <div>
         <div className=''>

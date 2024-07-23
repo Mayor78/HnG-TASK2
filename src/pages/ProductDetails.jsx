@@ -1,37 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import loader from '../assets/Spinner-2.gif';
+import { CartContext } from '../context/CartContext';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const { addToCart } = useContext(CartContext);
+  
   useEffect(() => {
     const fetchProducts = async () => {
+        window.scrollTo(0, 0);
       try {
+        // Fetch both products and newProducts from the API
         const [productsResponse, newProductsResponse] = await Promise.all([
-          axios.get('http://localhost:3000/products'),
-          axios.get('http://localhost:3000/newProducts')
+          axios.get('https://mayor78.github.io/fake-api2/data.json'),
+          axios.get('https://mayor78.github.io/fake-api2/data.json')
         ]);
-        const foundProduct = data.products.find(p => p.id === parseInt(id)) ||
-        data.newProducts.find(p => p.id === parseInt(id));
 
-        setProduct(foundProduct || null);
-        console.log('Products API Response:', productsResponse.data);
-        console.log('New Products API Response:', newProductsResponse.data);
+        // Extract the data from the responses
+        const productsData = productsResponse.data;
+        const newProductsData = newProductsResponse.data;
 
-        // let foundProduct = null;
-
-        if (Array.isArray(productsResponse.data)) {
-          foundProduct = productsResponse.data.find(prod => prod.id.toString() === id);
-        }
-
-        if (!foundProduct && Array.isArray(newProductsResponse.data)) {
-          foundProduct = newProductsResponse.data.find(prod => prod.id.toString() === id);
-        }
+        // Find the product in both arrays
+        const foundProduct = productsData.products.find(p => p.id === parseInt(id)) ||
+                             newProductsData.newProducts.find(p => p.id === parseInt(id));
 
         if (foundProduct) {
           setProduct(foundProduct);
@@ -85,7 +81,17 @@ const ProductDetails = () => {
             )}
           </div>
           <div>
-            <button className='bg-orange-400 mx-3 md:mx-0 text-white p-4 rounded-md mt-10 mb-3 md:mt-20 hover:bg-orange-300'>
+          <button 
+              onClick={() => addToCart({
+                image: product.image || product.picture,
+                name: product.title || product.name,
+                description: product.description || product.info,
+                amount: product.price || product.amount,
+                oldprice: product.oldPrice,
+                id: product.id
+              })}
+              className='bg-orange-400 mx-3 md:mx-0 text-white p-4 rounded-md mt-10 mb-3 md:mt-20 hover:bg-orange-300'
+            >
               Add To Cart
             </button>
           </div>

@@ -10,7 +10,9 @@ const MobileProductDetails = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchProducts = async () => {
+
       try {
         const [productsResponse, newProductsResponse] = await Promise.all([
           axios.get('http://localhost:3000/products'),

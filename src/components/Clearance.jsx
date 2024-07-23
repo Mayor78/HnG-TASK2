@@ -10,6 +10,7 @@ const Clearance = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      window.scrollTo(0, 0);
       try {
         const response = await axios.get('https://mayor78.github.io/fake-api2/data.json');
         console.log('API Response:', response.data);

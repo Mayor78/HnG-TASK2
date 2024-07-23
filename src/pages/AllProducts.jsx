@@ -15,7 +15,7 @@ const AllProducts = () => {
   useEffect(() => {
     loadProducts(currentPage);
   }, [currentPage]);
-
+  window.scrollTo(0, 0);
   const loadProducts = async (page) => {
     try {
       const [productsResponse, newProductsResponse] = await Promise.all([

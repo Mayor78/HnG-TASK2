@@ -38,7 +38,7 @@ const NewInStoreItem = ({ id, name, picture, amount, info, icon }) => {
         <Link to={`/product/${id}`}>{shortname}</Link>
          <p className='text-red-500'>${amount}</p>
          <button onClick={() => addToCart({id: Math.random(), picture, name, amount})}
-          className=' text-white w-full py-2 rounded-md '><BsCart/></button>
+          className=' text-white w-full mr-10 rounded-md '><BsCart/></button>
           
         </div>
         <Link to={`/product/${id}`}><p>{shortinfo}</p></Link>

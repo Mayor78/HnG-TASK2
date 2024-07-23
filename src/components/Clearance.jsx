@@ -46,10 +46,10 @@ const Clearance = () => {
   }
 
   return (
-    <div className='BG bg-gray-300'>
+    <div className='BG bg-orange-300'>
       <div>
-        <h1 className='flex justify-center place-items-center p-4 font-semi-bold text-3xl'>CLEARANCE DEALS</h1>
-        <div className='overflow-hidden px-[3rem]'>
+        <h1 className='flex justify-center font-awesome-text place-items-center p-4 font-semi-bold text-3xl'>CLEARANCE DEALS</h1>
+        <div className='overflow-hidden px-[1rem]'>
           <div className='flex gap-3 overflow-x-auto whitespace-nowrap scroll-smooth hide-scrollbar p-6'>
             {products.map(product => (
               <div key={product.id} className=''>

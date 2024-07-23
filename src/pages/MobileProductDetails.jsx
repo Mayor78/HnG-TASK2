@@ -12,25 +12,16 @@ const MobileProductDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     const fetchProducts = async () => {
-
       try {
-        const [productsResponse, newProductsResponse] = await Promise.all([
-          axios.get('http://localhost:3000/products'),
-          axios.get('http://localhost:3000/newProducts')
-        ]);
+        const response = await axios.get('https://mayor78.github.io/fake-api2/data.json');
+        const products = response.data.products || [];
+        const newProducts = response.data.newProducts || [];
 
-        console.log('Products API Response:', productsResponse.data);
-        console.log('New Products API Response:', newProductsResponse.data);
+        console.log('Products API Response:', products);
+        console.log('New Products API Response:', newProducts);
 
-        let foundProduct = null;
-
-        if (Array.isArray(productsResponse.data)) {
-          foundProduct = productsResponse.data.find(prod => prod.id.toString() === id);
-        }
-
-        if (!foundProduct && Array.isArray(newProductsResponse.data)) {
-          foundProduct = newProductsResponse.data.find(prod => prod.id.toString() === id);
-        }
+        const allProducts = [...products, ...newProducts];
+        const foundProduct = allProducts.find(prod => prod.id.toString() === id);
 
         if (foundProduct) {
           setProduct(foundProduct);

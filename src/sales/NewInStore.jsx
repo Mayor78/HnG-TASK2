@@ -9,27 +9,27 @@ const NewInStore = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchNewProducts();
-  }, []);
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('https://mayor78.github.io/fake-api2/data.json');
+        console.log('API Response:', response.data);
 
-  const fetchNewProducts = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/newProducts');
-      console.log('API Response:', response.data);
-  
-      // Directly use the response data if it is an array
-      if (Array.isArray(response.data)) {
-        setNewProducts(response.data);
-      } else {
-        throw new Error('Invalid data format');
+        if (response.data && Array.isArray(response.data.newProducts)) {
+          setNewProducts(response.data.newProducts);
+        } else {
+          console.error('Received data:', response.data);
+          throw new Error('Invalid data format');
+        }
+      } catch (err) {
+        console.error('Error fetching products:', err.message);
+        setError('Error fetching products: ' + err.message);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching new products:', error);
-      setError('Error fetching new products');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchProducts();
+  }, []);
   if (loading) {
     return <div className='flex justify-center place-items-center'>{
       <div className='flex justify-center place-items-center w-[300px] h-[300px] bg-white rounded-full p-6 text-center'>

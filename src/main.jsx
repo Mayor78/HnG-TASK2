@@ -18,6 +18,7 @@ import AllProducts from './pages/AllProducts.jsx';
 import TransferPayment from './pages/TransferPayment.jsx';
 import Bedroom from './pages/Bedroom.jsx';
 import ProductDetails from './pages/ProductDetails.jsx';
+import MobileProductDetails from './pages/MobileProductDetails.jsx';
 
 const router = createBrowserRouter([
   {
@@ -33,9 +34,10 @@ const router = createBrowserRouter([
       { path: 'services', element: <Services /> },
       { path: 'cart', element: <CartPage /> },
       { path: 'checkout', element: <Checkout /> }, 
-      { path: 'all-product', element: <AllProducts /> },
+      { path: 'all-products', element: <AllProducts /> },
       { path: 'transfer-payment', element: <TransferPayment /> }, 
       { path:"/product/:id", element: <ProductDetails /> },
+      { path:"/mobile-product/:id", element: <MobileProductDetails /> },
       
 
     ],

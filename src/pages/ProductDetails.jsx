@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
-import loader from '../assets/Spinner-2.gif'
+import loader from '../assets/Spinner-2.gif';
+
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -15,11 +16,14 @@ const ProductDetails = () => {
           axios.get('http://localhost:3000/products'),
           axios.get('http://localhost:3000/newProducts')
         ]);
+        const foundProduct = data.products.find(p => p.id === parseInt(id)) ||
+        data.newProducts.find(p => p.id === parseInt(id));
 
+        setProduct(foundProduct || null);
         console.log('Products API Response:', productsResponse.data);
         console.log('New Products API Response:', newProductsResponse.data);
 
-        let foundProduct = null;
+        // let foundProduct = null;
 
         if (Array.isArray(productsResponse.data)) {
           foundProduct = productsResponse.data.find(prod => prod.id.toString() === id);
@@ -46,11 +50,13 @@ const ProductDetails = () => {
   }, [id]);
 
   if (loading) {
-    return <div className='flex justify-center place-items-center'>{
-      <div className='flex justify-center place-items-center w-[300px] h-[300px] bg-white rounded-full p-6 text-center'>
-        <img src={loader} alt={'loading....'}/></div>
-    }
-      </div>;
+    return (
+      <div className='flex justify-center items-center'>
+        <div className='flex justify-center items-center w-[300px] h-[300px] bg-white rounded-full p-6 text-center'>
+          <img src={loader} alt={'loading...'} />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -61,10 +67,13 @@ const ProductDetails = () => {
     return <div>Product not found</div>;
   }
 
+  const shortInfo = (product.description || product.info || '').length > 200 
+    ? `${(product.description || product.info).substr(0, 200)}...` 
+    : product.description || product.info;
+
   return (
-    <div className='product-details  p-4 rounded-md mt-4'>
-      <div 
-      className='product-image grid md:flex gap-4 mx- md:mx-10 bg-white shadow-lg border border-solid '>
+    <div className='product-details p-4 rounded-md mt-4'>
+      <div className='product-image grid md:flex gap-4 mx- md:mx-10 bg-white shadow-lg border border-solid'>
         <img src={product.image || product.picture} alt={product.title || product.name} className="w-[400px] rounded-md h-[400px]" />
         <div>
           <h1 className='text-3xl mx-3 md:mx-0 font-semi-bold mt-4'>{product.title || product.name}</h1>
@@ -72,7 +81,7 @@ const ProductDetails = () => {
           <div className='mt-20 flex gap-3'>
             <p className='text-green-500 mt-2 mx-3 md:mx-0 text-3xl'>${product.price || product.amount}</p>
             {product.oldPrice && (
-              <p className='text-gray-400  mt-4 text-lg'><strike>${product.oldPrice}</strike></p>
+              <p className='text-gray-400 mt-4 text-lg'><strike>${product.oldPrice}</strike></p>
             )}
           </div>
           <div>
@@ -83,14 +92,20 @@ const ProductDetails = () => {
         </div>
       </div>
       <div className='bg-white shadow-lg border border-solid md:mx-10 mt-7'>
-      <h2 className='mb-10 mt-20 mx-2 text-3xl font-semibold'>Product Details</h2>
-      <hr />
-      <div className=' leading-7 p-3 mx-6'>
-        <p className='mt-2'>{product.description || product.info}</p>
+        <h2 className='mb-10 mt-20 mx-2 text-3xl font-semibold'>Product Details</h2>
+        <hr />
+        <div className='leading-7 p-3 mx-6'>
+          <div className='block md:hidden'>
+            <p>{shortInfo}</p>
+            <Link to={`/mobile-product/${id}`} className='text-blue-500 underline'>
+              Read More
+            </Link>
+          </div>
+          <p className='hidden md:block'> {product.description || product.info}</p>
+        </div>
       </div>
     </div>
-    </div>
   );
-}
+};
 
 export default ProductDetails;

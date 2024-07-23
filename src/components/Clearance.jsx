@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ClearanceItem from './ClearanceItem';
-import loader from '../assets/Spinner-2.gif'
+import loader from '../assets/Spinner-2.gif';
+
 const Clearance = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,17 +11,18 @@ const Clearance = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/products');
-        // console.log('API Response:', response.data);
+        const response = await axios.get('https://mayor78.github.io/fake-api2/data.json');
+        console.log('API Response:', response.data);
 
-        if (Array.isArray(response.data)) {
-          setProducts(response.data);
+        if (response.data && Array.isArray(response.data.products)) {
+          setProducts(response.data.products);
         } else {
+          console.error('Received data:', response.data);
           throw new Error('Invalid data format');
         }
       } catch (err) {
-        console.error('Error fetching products:', err);
-        setError('Error fetching products');
+        console.error('Error fetching products:', err.message);
+        setError('Error fetching products: ' + err.message);
       } finally {
         setLoading(false);
       }
@@ -30,11 +32,13 @@ const Clearance = () => {
   }, []);
 
   if (loading) {
-    return <div className='flex justify-center place-items-center'>{
-      <div className='flex justify-center place-items-center w-[300px] h-[300px] bg-white rounded-full p-6 text-center'>
-        <img src={loader} alt={'loading....'}/></div>
-    }
-      </div>;
+    return (
+      <div className='flex justify-center place-items-center'>
+        <div className='flex justify-center place-items-center w-[300px] h-[300px] bg-white rounded-full p-6 text-center'>
+          <img src={loader} alt={'loading....'} />
+        </div>
+      </div>
+    );
   }
 
   if (error) {

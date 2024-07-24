@@ -4,11 +4,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IoIosHeartEmpty } from "react-icons/io";
 import { BsTrash } from "react-icons/bs";
 import { toast } from 'react-toastify';
+import empty from '../assets/emptycart.png'
+import shopping from '../assets/Shopping cart.gif'
 
 const CartPage = () => {
   const { cart, removeFromCart, addToCart, decreaseQuantity } = useContext(CartContext);
   
-
+  window.scrollTo(0, 0);
   const handleRemoveFromCart = (productId) => {
     removeFromCart(productId);
     toast.info("Item removed from cart");
@@ -26,9 +28,13 @@ const CartPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <Link to={'/'} className="text-blue-500 hover:underline">Continue Shopping</Link>
+      <Link to={'/'} className="text-blue-500 text-2xl hover:underline">Continue Shopping <img src={shopping}alt="" /></Link>
       {cart.length === 0 ? (
-        <p>Your cart is empty</p>
+        <div className="flex flex-col items-center justify-center h-screen">
+         <h1 className="text-3xl mt-8 text-center">Your cart is empty</h1>
+          <img src={empty} alt="Empty Cart" className="w-1/2"/>
+          
+        </div>
       ) : (
         <div className="cart-list mt-4">
           <div className='details hidden md:flex justify-between p-3 font-semibold text-lg bg-gray-200 rounded'>

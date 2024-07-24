@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProductCard from '../sales/ProductCard';
 import loader from '../assets/Spinner-2.gif';
-import { useParams } from 'react-router-dom';
 
 const AllProducts = () => {
-  
   const productsPerPage = 6; // Number of products to show per page
   const [currentPage, setCurrentPage] = useState(1);
   const [displayedProducts, setDisplayedProducts] = useState([]);
@@ -13,17 +11,18 @@ const AllProducts = () => {
   const [totalProducts, setTotalProducts] = useState(0);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     loadProducts(currentPage);
   }, [currentPage]);
-  window.scrollTo(0, 0);
+
   const loadProducts = async (page) => {
     try {
       const [productsResponse, newProductsResponse] = await Promise.all([
-        axios.get('http://localhost:3000/products'),
-        axios.get('http://localhost:3000/newProducts')
+        axios.get('https://mayor78.github.io/fake-api2/data.json'),
+        axios.get('https://mayor78.github.io/fake-api2/data.json')
       ]);
 
-      const allProducts = [...productsResponse.data, ...newProductsResponse.data];
+      const allProducts = [...productsResponse.data.products, ...productsResponse.data.newProducts];
       setTotalProducts(allProducts.length);
 
       const newProducts = allProducts.slice((page - 1) * productsPerPage, page * productsPerPage);

@@ -22,11 +22,9 @@ const ProductCard = ({ id, image, name, description, oldprice, amount, isNew }) 
         )}
         <IoIosHeartEmpty className="absolute top-2 left-2 text-gray-600 cursor-pointer" size={24} />
         <Link to={`/product/${id}`} className="absolute inset-0 w-full h-full" />
-        <button
-          className="hidden group-hover:block md:hidden absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
+        <Link to={`/product/${id}`} className="hidden group-hover:block md:block absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-blue-500 text-white rounded-md">
           View Details
-        </button>
+        </Link>
       </div>
       <div className="p-4">
         <h2 className="text-xl font-semibold mb-2">{name}</h2>

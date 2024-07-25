@@ -1,10 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Modal from '../components/Modal';
+
+
+
 
 
 const Checkout = () => {
-  const { cart, removeFromCart } = useContext(CartContext);
+  const { cart, removeFromCart, clearCart } = useContext(CartContext);
   const [formData, setFormData] = useState({
     name: '',
     address: '',
@@ -15,6 +20,10 @@ const Checkout = () => {
     cardExpiration: '',
     cardCVC: ''
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [orderDetails, setOrderDetails] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,24 +33,41 @@ const Checkout = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic
-    console.log(formData);
+    const totalPrice = cart.reduce((total, item) => total + item.amount * item.quantity, 0);
+    const newOrder = {
+      id: new Date().getTime(),
+      ...formData,
+      date: new Date().toISOString(),
+      totalPrice,
+      completed: false, // Set to false initially
+      products: cart
+    };
+  
+    setOrderDetails(newOrder);
+    setIsModalOpen(true);
   };
-  const navigate = useNavigate();
+  
 
-  const handleCheckout = () => {
-    const totalAmount = cart.reduce((acc, product) => acc + product.amount * product.quantity, 0);
-    navigate('/transfer-payment', { state: { totalAmount } });
+  const handleConfirm = async () => {
+    try {
+      await axios.post('http://localhost:3000/orders', orderDetails); // Ensure this endpoint is correct
+      clearCart();
+      navigate('/thank-you');
+    } catch (error) {
+      console.error('Error submitting order:', error);
+    } finally {
+      setIsModalOpen(false);
+    }
   };
+  
 
   const totalPrice = cart.reduce((total, item) => total + item.amount * item.quantity, 0);
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Checkout</h1>
-      <Link to={'/cart'}> Go back to Cart</Link>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Cart Summary */}
         <div>
@@ -58,7 +84,7 @@ const Checkout = () => {
                     <p>${item.amount} x {item.quantity}</p>
                   </div>
                   <button 
-                    className="text-red-500" 
+                    className="text-red-500 hover:text-red-700" 
                     onClick={() => removeFromCart(item.id)}>
                     Remove
                   </button>
@@ -133,12 +159,6 @@ const Checkout = () => {
               />
             </div>
             <h2 className="text-xl font-semibold mb-2">Payment Information</h2>
-             <div>
-                <button onClick={handleCheckout} className="text-blue-500 hover:text-blue-700" >
-
-                  Pay with Transfer
-                </button>
-             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1">Card Number</label>
               <input 
@@ -183,6 +203,23 @@ const Checkout = () => {
           </form>
         </div>
       </div>
+
+      <Modal 
+        isOpen={isModalOpen} 
+        // onClose={handleCancel} 
+        onConfirm={handleConfirm}
+      >
+        <h2 className="text-lg font-bold mb-4">Order Confirmation</h2>
+        <div>
+          <h3 className="text-xl font-semibold mb-2">Order Details</h3>
+          <p><strong>Name:</strong> {orderDetails?.name}</p>
+          <p><strong>Address:</strong> {orderDetails?.address}, {orderDetails?.city}, {orderDetails?.country}, {orderDetails?.postalCode}</p>
+          <p><strong>Card Number:</strong> {orderDetails?.cardNumber}</p>
+          <p><strong>Total Price:</strong> ${orderDetails?.totalPrice}</p>
+          <p className="mt-4 text-[15px]">Order placed on {orderDetails?.date}</p>
+        </div>
+        <p className="mt-4 font-semibold">Are you sure you want to place the order?</p>
+      </Modal>
     </div>
   );
 };

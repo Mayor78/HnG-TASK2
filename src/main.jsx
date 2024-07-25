@@ -19,6 +19,10 @@ import TransferPayment from './pages/TransferPayment.jsx';
 import Bedroom from './pages/Bedroom.jsx';
 import ProductDetails from './pages/ProductDetails.jsx';
 import MobileProductDetails from './pages/MobileProductDetails.jsx';
+import SearchResults from './pages/SearchResults.jsx';
+import { ProductsProvider } from './context/ProductContext.jsx';
+import Profile from './pages/Profile.jsx';
+import Thanks from './pages/Thanks.jsx';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +42,9 @@ const router = createBrowserRouter([
       { path: 'transfer-payment', element: <TransferPayment /> }, 
       { path:"/product/:id", element: <ProductDetails /> },
       { path:"/mobile-product/:id", element: <MobileProductDetails /> },
+      { path:"/search-results", element: <SearchResults /> },
+      { path: '/profile', element: <Profile /> },
+      { path: '/thank-you', element: <Thanks /> },
       
 
     ],
@@ -46,9 +53,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <ProductsProvider>
     <CartProvider> {/* Wrap the RouterProvider with CartProvider */}
       <ToastContainer />
       <RouterProvider router={router} />
     </CartProvider>
+    </ProductsProvider>
   </React.StrictMode>
 );

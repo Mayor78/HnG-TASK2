@@ -48,8 +48,13 @@ export const CartProvider = ({ children }) => {
     });
   };
 
+  const clearCart = () => {
+    setCart([]);
+    toast.info("Cart cleared");
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, decreaseQuantity, totalItems }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, decreaseQuantity, clearCart, totalItems }}>
       {children}
     </CartContext.Provider>
   );

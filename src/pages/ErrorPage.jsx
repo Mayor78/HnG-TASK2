@@ -13,7 +13,7 @@ const ErrorPage = () => {
 
     const timer = setInterval(() => {
       setCounter((prevCounter) => prevCounter - 1);
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(timer);
   }, [counter, navigate]);
@@ -23,20 +23,23 @@ const ErrorPage = () => {
       <img src={error} alt="Error 404" className="max-w-full h-auto mb-6" />
       <h1 className="text-3xl font-bold mb-4">Page Not Found</h1>
       <p className="text-lg mb-6">Sorry, the page you're looking for doesn't exist.</p>
-      <p className="text-lg mb-6">Redirecting in {counter} seconds...</p>
+      <p className="text-lg mb-6 font-bold">Redirecting in {counter} seconds...</p>
       <div className="flex space-x-4">
+       
+      <button
+          onClick={() => navigate('/all-products')}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Go '(hard)' to All Products
+        </button>
+
         <button
           onClick={() => navigate('/')}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          Go to Homepage
+          Go '(home)' to Homepage
         </button>
-        <button
-          onClick={() => navigate('/all-products')}
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Go to All Products
-        </button>
+       
       </div>
     </div>
   );

@@ -78,7 +78,7 @@ const AllProducts = () => {
                 oldprice={product.oldprice || ''}
                 amount={product.amount || product.price}
                 isNew={true}
-                productId={product.id} // Pass the product ID for routing
+                id={product.id} // Pass the product ID for routing
               />
             )}
           </div>

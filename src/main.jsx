@@ -23,6 +23,7 @@ import SearchResults from './pages/SearchResults.jsx';
 import { ProductsProvider } from './context/ProductContext.jsx';
 import Profile from './pages/Profile.jsx';
 import Thanks from './pages/Thanks.jsx';
+import Orders from './components/Orders.jsx';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,8 @@ const router = createBrowserRouter([
       { path:"/search-results", element: <SearchResults /> },
       { path: '/profile', element: <Profile /> },
       { path: '/thank-you', element: <Thanks /> },
+      { path: '/orders', element: <Orders /> },
+
       
 
     ],

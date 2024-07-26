@@ -9,6 +9,7 @@ import { PiTimer } from "react-icons/pi";
 import { RiUserFollowFill } from "react-icons/ri";
 import loader from '../assets/loader2.gif'
 import Orders from '../components/Orders';
+import MobileProfile from './MobileProfile';
 const Profile = () => {
   const [selectedSection, setSelectedSection] = useState('My Account');
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,7 @@ const Profile = () => {
   return (
     <div className='big-container bg-slate-400 py-6'>
       <div className='second-main-wrapper flex mx-10 gap-3'>
-        <div className='first-container-for-account-side-bar sticky top-[8rem] h-[80vh] bg-white rounded-md shadow-md w-[30%] px-4'>
+        <div className='first-container-for-account-side-bar sticky top-[8rem] hidden md:block lg:block h-[80vh] bg-white rounded-md shadow-md w-[30%] px-4'>
           <section>
             <h2 onClick={() => handleSectionClick('My Account')} className='cursor-pointer flex py-5 gap-2'><FaRegUser className='text-2xl' />My Account</h2>
             <h2 onClick={() => handleSectionClick('Order')} className='cursor-pointer py-3 flex gap-2'><CiCreditCard1 className='text-2xl'/>Order</h2>
@@ -68,7 +69,7 @@ const Profile = () => {
           {selectedSection === 'Recently View' && <h1>Recently Viewed Items</h1>}
           {selectedSection === 'Follow Seller' && <h1>Follow Seller</h1>}
           {selectedSection === 'My Account' && (
-            <div className='big-wrapper'>
+            <div className='big-wrapper hidden md:block lg:block'>
               <div className='medium-wrapper grid grid-cols-2 mt-[rem] h-[80vh] bg-white p-7'>
                 <div className='my-5 border p-3 w-[25rem] border-solid'>
                   <h1 className='font-bold text-2xl mb-3'>My Account Details</h1>
@@ -113,6 +114,11 @@ const Profile = () => {
             </div>
           )}
         </div>
+      </div>
+      <div className='wrapper-for-mobile block md:hidden lg:hidden'>
+        <MobileProfile/>
+
+
       </div>
     </div>
   );

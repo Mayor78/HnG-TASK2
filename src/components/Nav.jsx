@@ -72,8 +72,12 @@ const Nav = () => {
     setSuggestions([]);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(prev => !prev);
+  const handleUserClick = () => {
+    if (window.innerWidth < 768) {
+      navigate('/profile');
+    } else {
+      setIsDropdownOpen(prev => !prev);
+    }
   };
 
   return (
@@ -118,17 +122,17 @@ const Nav = () => {
         </div>
         {!isInputFocused && (
           <div className='flex gap-6 mt-3 text-white relative' ref={dropdownRef}>
-              <h1 className='hidden md:flex mt-1'>CONTACT US</h1>
-            <button onClick={toggleDropdown} className='text-xl flex gap-1 hover:text-orange-400'>
-              <FaRegUser className='mt-1'/> Hi, Abraham
+            <h1 className='hidden md:flex mt-1'>CONTACT US</h1>
+            <button onClick={handleUserClick} className='text-xl flex gap-1 hover:text-orange-400'>
+              <FaRegUser className='mt-1'/><h1 className='hidden md:block lg:block'>Hi, Abraham</h1> 
             </button>
             {isDropdownOpen && (
               <div className="absolute top-full right-0 bg-white text-black border border-gray-300 rounded-md p-3 shadow-lg mt-2 w-40">
                 <Link to="/profile" onClick={() => setIsDropdownOpen(false)} className=" px-4 py-2 hover:bg-primary hover:text-white text-[20px] flex gap-2"><FaRegUser className='mt-1'/>Profile</Link>
                 <Link to="/orders" onClick={() => setIsDropdownOpen(false)} className=" px-4 py-2 hover:bg-primary hover:text-white text-[20px] flex gap-2"><BsCreditCard className='mt-1'/>Orders</Link>
                 <Link to="/settings" onClick={() => setIsDropdownOpen(false)} className=" px-4 py-2 hover:bg-primary hover:text-white text-[20px] flex gap-2"><CiSettings className='mt-1'/>Settings</Link>
-                <hr  className='mt-2 text-bold'/>
-                <Link to="/settings" onClick={() => setIsDropdownOpen(false)} className=" px-4 py-2 hover:bg-primary hover:text-white text-[20px] flex gap-2"><CiLogout className='mt-1'/>LogOut</Link>
+                <hr  className='mb-5 text-bold'/>
+                <Link to="/settings" onClick={() => setIsDropdownOpen(false)} className=" px-4 py-2 hover:bg-orange-400 hover:text-white text-[20px] flex gap-2"><CiLogout className='mt-1'/>LogOut</Link>
               </div>
             )}
             <CartIcon />

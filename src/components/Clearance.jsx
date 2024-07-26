@@ -12,11 +12,11 @@ const Clearance = () => {
     const fetchProducts = async () => {
       window.scrollTo(0, 0);
       try {
-        const response = await axios.get('https://mayor78.github.io/fake-api2/data.json');
+        const response = await axios.get('https://fakestoreapi.com/products');
         console.log('API Response:', response.data);
 
-        if (response.data && Array.isArray(response.data.products)) {
-          setProducts(response.data.products);
+        if (Array.isArray(response.data)) {
+          setProducts(response.data);
         } else {
           console.error('Received data:', response.data);
           throw new Error('Invalid data format');

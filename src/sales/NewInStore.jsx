@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import NewInStoreItem from '../components/NewInStoreItem';
 import { Link } from 'react-router-dom';
-import loader from '../assets/Spinner-2.gif'
+import loader from '../assets/Spinner-2.gif';
+
 const NewInStore = () => {
   const [newProducts, setNewProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,11 +12,11 @@ const NewInStore = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://mayor78.github.io/fake-api2/data.json');
+        const response = await axios.get('https://fakestoreapi.com/products');
         console.log('API Response:', response.data);
 
-        if (response.data && Array.isArray(response.data.newProducts)) {
-          setNewProducts(response.data.newProducts);
+        if (Array.isArray(response.data)) {
+          setNewProducts(response.data);
         } else {
           console.error('Received data:', response.data);
           throw new Error('Invalid data format');
@@ -30,27 +31,34 @@ const NewInStore = () => {
 
     fetchProducts();
   }, []);
+
   if (loading) {
-    return <div className='flex justify-center place-items-center'>{
-      <div className='flex justify-center place-items-center w-[300px] h-[300px] bg-white rounded-full p-6 text-center'>
-        <img src={loader} alt={'loading....'}/></div>
-    }
-      </div>;
+    return (
+      <div className='flex justify-center place-items-center'>
+        <div className='flex justify-center place-items-center w-[300px] h-[300px] bg-white rounded-full p-6 text-center'>
+          <img src={loader} alt='loading...' />
+        </div>
+      </div>
+    );
   }
-  if (error) return <div>{error}</div>;
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  // Slice the last 8 products
+  const lastProducts = newProducts.slice(-8).reverse();
 
   return (
     <div className='bg-white'>
       <h2 className='flex justify-center items-center p-4 font-semi-bold text-3xl'>New in Store</h2>
       <div className='overflow-hidden px-6'>
         <div className='flex gap-3 overflow-x-auto whitespace-nowrap scroll-smooth hide-scrollbar'>
-          {
-            newProducts.slice(0, 8).map((product) => (
-              <div key={product.id} className='flex '>
-                <NewInStoreItem {...product} />
-              </div>
-            ))
-          }
+          {lastProducts.map(product => (
+            <div key={product.id} className='flex'>
+              <NewInStoreItem {...product} />
+            </div>
+          ))}
         </div>
       </div>
       <div className="text-center mt-4">

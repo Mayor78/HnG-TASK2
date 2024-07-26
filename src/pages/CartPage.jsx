@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { IoIosHeartEmpty } from "react-icons/io";
 import { BsTrash } from "react-icons/bs";
 import { toast } from 'react-toastify';
-import empty from '../assets/emptycart.png'
-import shopping from '../assets/Shopping cart.gif'
+import empty from '../assets/emptycart.png';
+import shopping from '../assets/Shopping cart.gif';
 
 const CartPage = () => {
   const { cart, removeFromCart, addToCart, decreaseQuantity } = useContext(CartContext);
-  
+
   window.scrollTo(0, 0);
+
   const handleRemoveFromCart = (productId) => {
     removeFromCart(productId);
     toast.info("Item removed from cart");
@@ -24,16 +25,13 @@ const CartPage = () => {
     decreaseQuantity(productId);
   };
 
- 
-
   return (
     <div className="container mx-auto p-4">
-      <Link to={'/'} className="text-blue-500 text-2xl hover:underline">Continue Shopping <img src={shopping}alt="" /></Link>
+      <Link to={'/'} className="text-blue-500 text-2xl hover:underline">Continue Shopping <img src={shopping} alt="" /></Link>
       {cart.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-screen">
-         <h1 className="text-3xl mt-8 text-center">Your cart is empty</h1>
+          <h1 className="text-3xl mt-8 text-center">Your cart is empty</h1>
           <img src={empty} alt="Empty Cart" className="w-1/2"/>
-          
         </div>
       ) : (
         <div className="cart-list mt-4">
@@ -46,9 +44,9 @@ const CartPage = () => {
           {cart.map(product => (
             <div key={product.id} className="cart-item flex flex-col md:flex-row items-center justify-between mt-4 p-4 bg-white rounded shadow">
               <div className='flex items-center gap-4'>
-                <img src={product.image} alt={product.name} className='w-24 h-24 object-cover rounded' />
+                <img src={product.image || product.picture} alt={product.title || product.name} className='w-24 h-24 object-cover rounded' />
                 <div className='flex flex-col'>
-                  <h3 className='font-semibold text-xl'>{product.name}</h3>
+                  <h3 className='font-semibold text-xl'>{product.title || product.name}</h3>
                   <p className='text-gray-400'>Estimated Time of delivery</p>
                   <div className='flex items-center gap-2 mt-2'>
                     <IoIosHeartEmpty className='text-gray-500'/>
@@ -60,9 +58,9 @@ const CartPage = () => {
                   </div>
                 </div>
               </div>
-              <div className='flex flex-col  md:flex-row items-center md:gap-[20rem] gap-4 mt-4 md:mt-0'>
+              <div className='flex flex-col md:flex-row items-center md:gap-[20rem] gap-4 mt-4 md:mt-0'>
                 <div className='Unit-price-container'>
-                  <h3 className='text-lg font-medium'>${product.amount}</h3>
+                  <h3 className='text-lg font-medium'>${product.price || product.amount}</h3>
                 </div>
                 <div className='quantity-container flex items-center gap-2 border border-gray-300 rounded px-2 py-1'>
                   <button onClick={() => handleDecreaseQuantity(product.id)} className="text-lg font-bold">-</button>
@@ -70,14 +68,14 @@ const CartPage = () => {
                   <button onClick={() => handleIncreaseQuantity(product)} className="text-lg font-bold">+</button>
                 </div>
                 <div className='total-container'>
-                  <p className='text-lg'>${product.amount * product.quantity}</p>
+                  <p className='text-lg'>${(product.price || product.amount) * product.quantity}</p>
                 </div>
               </div>
             </div>
           ))}
           <div className='flex justify-end items-center gap-8 mt-8'>
             <h1 className='text-2xl font-semibold'>Subtotal:</h1>
-            <p className='text-2xl font-semibold'>${cart.reduce((acc, product) => acc + product.amount * product.quantity, 0)}</p>
+            <p className='text-2xl font-semibold'>${cart.reduce((acc, product) => acc + (product.price || product.amount) * product.quantity, 0)}</p>
           </div>
           <div className='flex justify-end mt-4'>
             <Link to={'/checkout'} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

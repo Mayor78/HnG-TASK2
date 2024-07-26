@@ -1,12 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Modal from '../components/Modal';
-
-
-
-
 
 const Checkout = () => {
   const { cart, removeFromCart, clearCart } = useContext(CartContext);
@@ -33,7 +28,7 @@ const Checkout = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const totalPrice = cart.reduce((total, item) => total + item.amount * item.quantity, 0);
     const newOrder = {
@@ -45,23 +40,24 @@ const Checkout = () => {
       products: cart
     };
   
+    // Get existing orders from localStorage
+    const existingOrders = JSON.parse(localStorage.getItem('orderDetails')) || [];
+  
+    // Append new order to existing orders
+    const updatedOrders = [...existingOrders, newOrder];
+  
+    // Save updated orders back to localStorage
+    localStorage.setItem('orderDetails', JSON.stringify(updatedOrders));
+  
     setOrderDetails(newOrder);
     setIsModalOpen(true);
   };
   
-
-  const handleConfirm = async () => {
-    try {
-      await axios.post('http://localhost:3000/orders', orderDetails); // Ensure this endpoint is correct
-      clearCart();
-      navigate('/thank-you');
-    } catch (error) {
-      console.error('Error submitting order:', error);
-    } finally {
-      setIsModalOpen(false);
-    }
+  const handleConfirm = () => {
+    clearCart();
+    navigate('/thank-you');
+    setIsModalOpen(false);
   };
-  
 
   const totalPrice = cart.reduce((total, item) => total + item.amount * item.quantity, 0);
 

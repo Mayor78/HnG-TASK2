@@ -10,24 +10,17 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { addToCart } = useContext(CartContext);
-  
+
   useEffect(() => {
-    const fetchProducts = async () => {
-        window.scrollTo(0, 0);
+    const fetchProduct = async () => {
+      window.scrollTo(0, 0);
       try {
-        // Fetch both products and newProducts from the API
-        const [productsResponse, newProductsResponse] = await Promise.all([
-          axios.get('https://mayor78.github.io/fake-api2/data.json'),
-          axios.get('https://mayor78.github.io/fake-api2/data.json')
-        ]);
+        // Fetch the products from the API
+        const response = await axios.get('https://fakestoreapi.com/products');
+        const productsData = response.data;
 
-        // Extract the data from the responses
-        const productsData = productsResponse.data;
-        const newProductsData = newProductsResponse.data;
-
-        // Find the product in both arrays
-        const foundProduct = productsData.products.find(p => p.id === parseInt(id)) ||
-                             newProductsData.newProducts.find(p => p.id === parseInt(id));
+        // Find the product by ID
+        const foundProduct = productsData.find(p => p.id === parseInt(id));
 
         if (foundProduct) {
           setProduct(foundProduct);
@@ -35,14 +28,14 @@ const ProductDetails = () => {
           setError('Product not found');
         }
       } catch (err) {
-        console.error('Error fetching products:', err);
-        setError('Error fetching products');
+        console.error('Error fetching product:', err);
+        setError('Error fetching product');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProducts();
+    fetchProduct();
   }, [id]);
 
   if (loading) {
@@ -81,7 +74,7 @@ const ProductDetails = () => {
             )}
           </div>
           <div>
-          <button 
+            <button 
               onClick={() => addToCart({
                 image: product.image || product.picture,
                 name: product.title || product.name,

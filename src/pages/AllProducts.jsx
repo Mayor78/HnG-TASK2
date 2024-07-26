@@ -19,16 +19,28 @@ const AllProducts = () => {
     try {
       const [productsResponse, newProductsResponse] = await Promise.all([
         axios.get('https://mayor78.github.io/fake-api2/data.json'),
-        axios.get('https://mayor78.github.io/fake-api2/data.json')
+        axios.get('https://fakestoreapi.com/products')
       ]);
-
-      const allProducts = [...productsResponse.data.products, ...productsResponse.data.newProducts];
+  
+      // Log responses to check data
+      console.log('Products Response:', productsResponse.data);
+      console.log('New Products Response:', newProductsResponse.data);
+  
+      // Combine products from both responses
+      const allProducts = [
+        ...(productsResponse.data.products || []),
+        ...(newProductsResponse.data || [])
+      ];
+  
+      console.log('Combined Products:', allProducts);
+  
+      // Update state
       setTotalProducts(allProducts.length);
-
+  
       const newProducts = allProducts.slice((page - 1) * productsPerPage, page * productsPerPage);
       setDisplayedProducts(newProducts);
       setLoadingProducts(newProducts.map(() => true)); // Set all products to loading state initially
-
+  
       setTimeout(() => {
         setLoadingProducts(newProducts.map(() => false)); // Simulate loading delay and set all products to loaded state
       }, 1000); // Adjust the timeout as needed
@@ -36,6 +48,7 @@ const AllProducts = () => {
       console.error('Error fetching products:', err);
     }
   };
+  
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {

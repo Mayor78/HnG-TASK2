@@ -4,14 +4,15 @@ import { CartContext } from '../context/CartContext';
 import { BsCart } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 
-const NewInStoreItem = ({ id, name, picture, amount, info }) => {
+const NewInStoreItem = ({ id, title, image, price, description }) => {
   const { addToCart } = useContext(CartContext);
   const [isHovered, setIsHovered] = useState(false);
   const [isWished, setIsWished] = useState(false);
   const [message, setMessage] = useState('');
 
-  const shortname = name.length > 10 ? `${name.substr(0, 10)}...` : name;
-  const shortinfo = info.length > 15 ? `${info.substr(0, 15)}...` : info;
+  // Ensure title and description are defined
+  const shortname = title ? (title.length > 10 ? `${title.substr(0, 10)}...` : title) : '';
+  const shortinfo = description ? (description.length > 15 ? `${description.substr(0, 15)}...` : description) : '';
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
@@ -52,25 +53,25 @@ const NewInStoreItem = ({ id, name, picture, amount, info }) => {
           <p className='bg-green-500' style={clipPathStyle}>NEW</p>
         </div>
         <Link to={`/product/${id}`}>
-          <img src={picture} alt='Product' className='w-[200px] h-[150px]' />
+          <img src={image} alt={title || 'Product'} className='w-[200px] h-[150px]' />
         </Link>
         {/* Add to Cart Button (visible on large screens) */}
         <button
-          onClick={() => addToCart({ id: Math.random(), picture, name, amount })}
+          onClick={() => addToCart({ id, image, title, price })}
           className={`hidden lg:block text-white w-full bg-primary rounded-md ${isHovered ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
         >
           Add to Cart
         </button>
         {/* Cart Icon (visible on small screens) */}
         <BsCart
-          onClick={() => addToCart({ id: Math.random(), picture, name, amount })}
+          onClick={() => addToCart({ id, image, title, price })}
           className='lg:hidden text-primary text-2xl cursor-pointer'
         />
       </div>
       <div className='bg-white border border-solid shadow-md hover:ease-out p-1'>
         <div className='flex gap-6 p-2 justify-between'>
           <Link to={`/product/${id}`} className='text-gray-700 hover:text-blue-500'>{shortname}</Link>
-          <p className='text-red-500'>${amount}</p>
+          <p className='text-red-500'>${price}</p>
         </div>
         <Link to={`/product/${id}`}><p>{shortinfo}</p></Link>
       </div>

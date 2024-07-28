@@ -7,9 +7,21 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
 
+  // Load cart from localStorage on initial render
   useEffect(() => {
+    const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    setCart(savedCart);
+    const total = savedCart.reduce((acc, item) => acc + item.quantity, 0);
+    setTotalItems(total);
+    console.log("Loaded cart from localStorage:", savedCart);
+  }, []);
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
     const total = cart.reduce((acc, item) => acc + item.quantity, 0);
     setTotalItems(total);
+    console.log("Cart saved to localStorage:", cart);
   }, [cart]);
 
   const addToCart = (product) => {
@@ -50,7 +62,7 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCart([]);
-    toast.info("Cart cleared");
+    toast.success("Order successfully received");
   };
 
   return (

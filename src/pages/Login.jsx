@@ -1,24 +1,36 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
-      await axios.post('http://localhost:9000/api/users/login', formData);
+      const response = await axios.post('http://localhost:5000/login', formData);
+      const { token } = response.data;
+
+      // Ensure the token is saved under the same key
+      localStorage.setItem('authToken', token);
+
       toast.success('Login successful!');
       navigate('/');
+      window.location.reload();
     } catch (error) {
       console.error('Error logging in:', error);
+      toast.error('Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,6 +59,7 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 className="border p-2 w-full rounded-md"
+                required
               />
             </div>
             <div className="mb-4">
@@ -57,10 +70,25 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 className="border p-2 w-full rounded-md"
+                required
               />
             </div>
-            <button type="submit" className="bg-green-500 text-white w-full py-2 rounded-md hover:bg-green-600">
-              Signin
+            <button
+              type="submit"
+              className="bg-green-500 text-white w-full py-2 rounded-md hover:bg-green-600 relative"
+              disabled={loading}
+            >
+              {loading ? (
+                <div className="flex justify-center items-center">
+                  <svg className="animate-spin h-5 w-5 text-white mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 118 8V12H4z"></path>
+                  </svg>
+                  Signing in...
+                </div>
+              ) : (
+                'Signin'
+              )}
             </button>
           </form>
           <p className="mt-4 text-sm text-center">

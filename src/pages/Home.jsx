@@ -16,7 +16,7 @@ const Home = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % bgImages.length);
-    }, 3000);
+    }, 5000); // Change image every 5 seconds
 
     return () => clearInterval(interval);
   }, []);

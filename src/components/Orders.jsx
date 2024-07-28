@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import loader from '../assets/Spinner-2.gif';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('completed');
+  const [deliveryDate, setDeliveryDate] = useState('');
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const storedOrders = JSON.parse(localStorage.getItem('orderDetails'));
-        if (!Array.isArray(storedOrders)) {
-          console.error('Orders data from localStorage is not an array:', storedOrders);
-          setOrders([]);
-          localStorage.setItem('orderDetails', JSON.stringify([])); // Reinitialize as empty array
-          return;
-        }
-        setOrders(storedOrders);
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('http://localhost:5000/orders', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setOrders(response.data);
       } catch (error) {
         console.error('Error fetching orders:', error);
         setOrders([]);
@@ -29,6 +31,27 @@ const Orders = () => {
 
     fetchOrders();
   }, []);
+
+  const handleAcceptOrder = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await axios.post(`http://localhost:5000/orders/${selectedOrderId}/confirm`, {
+        deliveryDate
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const updatedOrder = response.data;
+      setOrders(orders.map(order =>
+        order._id === updatedOrder._id ? updatedOrder : order
+      ));
+      setDeliveryDate('');
+      setSelectedOrderId(null);
+    } catch (error) {
+      console.error('Error updating order:', error);
+    }
+  };
 
   const renderOrders = () => {
     if (loading) {
@@ -49,53 +72,44 @@ const Orders = () => {
       return false;
     });
 
-    return filteredOrders.map((order) => {
-      if (!Array.isArray(order.products)) {
-        console.error(`Order ${order.id} has invalid products data:`, order.products);
-        return (
-          <div key={order.id} className="border rounded p-4 mb-4">
-            <h3 className="text-lg font-semibold md:font-bold">Order ID: {order.id}</h3>
+    return filteredOrders.map((order) => (
+      <div key={order._id} className="border rounded p-4 mb-4">
+        <h3 className="text-lg font-semibold md:font-bold">Order ID: {order._id}</h3>
+        <p>Order Date: {new Date(order.date).toLocaleDateString()}</p>
+        <p>Total Price: ${order.totalPrice}</p>
+        <p className={`inline-block px-2 py-1 rounded ${order.completed ? 'bg-green-400 text-white' : 'bg-yellow-200 text-yellow-800'}`}>
+          Status: {order.completed ? 'Completed' : 'Pending'}
+        </p>
+        {order.completed === false ? (
+          <p className="text-gray-500">Processing...</p>
+        ) : (
+          order.deliveryDate && (
+            <p>Estimated Delivery Date: {new Date(order.deliveryDate).toLocaleDateString()}</p>
+          )
+        )}
+        <div className="mt-4">
+          <h4 className="text-md font-semibold mb-2">Order Details:</h4>
+          {order.products.length > 0 ? (
+            order.products.map((product) => (
+              <div
+                key={product._id}
+                className="flex items-center border-b pb-2 mb-2 cursor-pointer"
+                onClick={() => navigate(`/product/${product._id}`)}
+              >
+                <img src={product.image || 'default-image.jpg'} alt={product.name || 'No name'} className="w-16 h-16 object-cover mr-4" />
+                <div>
+                  <h5 className="font-semibold">{product.name || 'Unknown Product'}</h5>
+                  <p className="font-medium">Price: ${product.amount}</p>
+                  <p className="font-medium">Description: {product.shortDescription || 'No description'}</p>
+                </div>
+              </div>
+            ))
+          ) : (
             <p>No products found for this order.</p>
-          </div>
-        );
-      }
-
-      return (
-        <div key={order.id} className="border rounded p-4 mb-4">
-          <h3 className="text-lg font-semibold md:font-bold">Order ID: {order.id}</h3>
-          <p>Order Date: {new Date(order.date).toLocaleDateString()}</p>
-          <p>Total Price: ${order.totalPrice}</p>
-          <p className={`inline-block px-2 py-1 rounded ${order.completed ? 'bg-green-400 text-white' : 'bg-red-100 text-red-800'}`}>
-            Status: {order.completed ? 'Completed' : 'Uncompleted'}
-          </p>
-          <div className="mt-4">
-            <h4 className="text-md font-semibold mb-2">Order Details:</h4>
-            {order.products.length > 0 ? (
-              order.products.map((product) => {
-                const title = product.name || product.title || 'Unknown Product';
-
-                return (
-                  <div
-                    key={product.id}
-                    className="flex items-center border-b pb-2 mb-2 cursor-pointer"
-                    onClick={() => navigate(`/product/${product.id}`)}
-                  >
-                    <img src={product.image || 'default-image.jpg'} alt={product.name || 'No name'} className="w-16 h-16 object-cover mr-4" />
-                    <div>
-                      <h5 className="font-semibold">{title}</h5>
-                      <p className="font-medium">Price: ${product.amount}</p>
-                      <p className="font-medium">Description: {product.shortDescription || 'No description'}</p>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <p>No products found for this order.</p>
-            )}
-          </div>
+          )}
         </div>
-      );
-    });
+      </div>
+    ));
   };
 
   return (
@@ -111,7 +125,7 @@ const Orders = () => {
           onClick={() => setFilter('uncompleted')}
           className={`px-4 py-2 rounded-md border-b-4 ${filter === 'uncompleted' ? 'border-orange-500 text-orange-500 bg-orange-100' : 'border-transparent text-gray-800 bg-gray-200'}`}
         >
-          Uncompleted Orders
+          Pending Orders
         </button>
       </div>
       <div>

@@ -6,6 +6,8 @@ import { GiShoppingCart } from 'react-icons/gi';
 const CartIcon = () => {
   const { totalItems } = useContext(CartContext);
 
+  console.log("CartIcon totalItems:", totalItems); // Debugging line
+
   return (
     <div className="relative">
       <Link to="/cart">

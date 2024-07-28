@@ -10,7 +10,8 @@ const ProductCard = ({ id, image, name, description, oldprice, amount, isNew }) 
   const handleAddToCart = () => {
     addToCart({ id, image, name, description, oldprice, amount });
   };
-
+  
+  
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden relative group">
       <div className="relative">

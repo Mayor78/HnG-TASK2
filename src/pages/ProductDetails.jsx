@@ -15,13 +15,34 @@ const ProductDetails = () => {
     const fetchProduct = async () => {
       window.scrollTo(0, 0);
       try {
-        // Fetch the products from the API
-        const response = await axios.get('https://fakestoreapi.com/products');
-        const productsData = response.data;
-
-        // Find the product by ID
-        const foundProduct = productsData.find(p => p.id === parseInt(id));
-
+        // Fetch the products from both APIs
+        const [productsResponse, newProductsResponse] = await Promise.all([
+          axios.get('https://mayor78.github.io/fake-api2/data.json'),
+          axios.get('https://fakestoreapi.com/products')
+        ]);
+  
+        // Debugging: Log the API responses
+        console.log('Products API response:', productsResponse.data);
+        console.log('New Products API response:', newProductsResponse.data);
+  
+        const { products, newProducts } = productsResponse.data;
+        const newProductsData = newProductsResponse.data;
+  
+        // Check if both responses are arrays
+        if (!Array.isArray(products) || !Array.isArray(newProducts) || !Array.isArray(newProductsData)) {
+          throw new Error('Invalid API response format');
+        }
+  
+        // Add unique identifiers to products from different sources
+        const allProducts = [
+          ...products.map(p => ({ ...p, source: 'github' })),
+          ...newProducts.map(p => ({ ...p, source: 'github' })),
+          ...newProductsData.map(p => ({ ...p, source: 'fakestore' }))
+        ];
+  
+        // Adjust the logic to find the correct product based on ID and source
+        const foundProduct = allProducts.find(p => p.id === parseInt(id) && (p.source === 'fakestore' || (p.source === 'github' && p.id >= 21)));
+  
         if (foundProduct) {
           setProduct(foundProduct);
         } else {
@@ -34,9 +55,10 @@ const ProductDetails = () => {
         setLoading(false);
       }
     };
-
+  
     fetchProduct();
   }, [id]);
+  
 
   if (loading) {
     return (

@@ -13,14 +13,27 @@ const MobileProductDetails = () => {
     window.scrollTo(0, 0);
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://mayor78.github.io/fake-api2/data.json');
-        const products = response.data.products || [];
-        const newProducts = response.data.newProducts || [];
+        // Fetch the products from both APIs
+        const [githubResponse, fakestoreResponse] = await Promise.all([
+          axios.get('https://mayor78.github.io/fake-api2/data.json'),
+          axios.get('https://fakestoreapi.com/products')
+        ]);
 
-        console.log('Products API Response:', products);
-        console.log('New Products API Response:', newProducts);
+        // Get products from both responses
+        const githubProducts = [...(githubResponse.data.products || []), ...(githubResponse.data.newProducts || [])];
+        const fakestoreProducts = fakestoreResponse.data || [];
 
-        const allProducts = [...products, ...newProducts];
+        // Log responses for debugging
+        console.log('GitHub Products API Response:', githubProducts);
+        console.log('Fakestore Products API Response:', fakestoreProducts);
+
+        // Combine products from both sources
+        const allProducts = [
+          ...githubProducts.map(p => ({ ...p, source: 'github' })),
+          ...fakestoreProducts.map(p => ({ ...p, source: 'fakestore' }))
+        ];
+
+        // Find the product by ID, accommodating ID ranges
         const foundProduct = allProducts.find(prod => prod.id.toString() === id);
 
         if (foundProduct) {

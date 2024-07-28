@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import ProductCard from '../sales/ProductCard';
 import loader from '../assets/Spinner-2.gif';
 
@@ -21,26 +22,20 @@ const AllProducts = () => {
         axios.get('https://mayor78.github.io/fake-api2/data.json'),
         axios.get('https://fakestoreapi.com/products')
       ]);
-  
-      // Log responses to check data
-      console.log('Products Response:', productsResponse.data);
-      console.log('New Products Response:', newProductsResponse.data);
-  
+
       // Combine products from both responses
       const allProducts = [
-        ...(productsResponse.data.products || []),
-        ...(newProductsResponse.data || [])
+        ...(productsResponse.data.products || []).map(p => ({ ...p, source: 'github' })),
+        ...(newProductsResponse.data || []).map(p => ({ ...p, source: 'fakestore' }))
       ];
-  
-      console.log('Combined Products:', allProducts);
-  
+
       // Update state
       setTotalProducts(allProducts.length);
-  
+
       const newProducts = allProducts.slice((page - 1) * productsPerPage, page * productsPerPage);
       setDisplayedProducts(newProducts);
       setLoadingProducts(newProducts.map(() => true)); // Set all products to loading state initially
-  
+
       setTimeout(() => {
         setLoadingProducts(newProducts.map(() => false)); // Simulate loading delay and set all products to loaded state
       }, 1000); // Adjust the timeout as needed
@@ -48,7 +43,6 @@ const AllProducts = () => {
       console.error('Error fetching products:', err);
     }
   };
-  
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -84,15 +78,17 @@ const AllProducts = () => {
                 <img src={loader} alt="loading..." className="w-12 h-12" />
               </div>
             ) : (
-              <ProductCard
-                image={product.image || product.picture}
-                name={shortenText(product.name || product.title, 30)}
-                description={shortenText(product.description || product.info, 100)}
-                oldprice={product.oldprice || ''}
-                amount={product.amount || product.price}
-                isNew={true}
-                id={product.id} // Pass the product ID for routing
-              />
+              <Link >
+                <ProductCard
+                  image={product.image || product.picture}
+                  name={shortenText(product.name || product.title, 30)}
+                  description={shortenText(product.description || product.info, 100)}
+                  oldprice={product.oldprice || ''}
+                  amount={product.amount || product.price}
+                  isNew={true}
+                  id={product.id} // Pass the product ID for routing
+                />
+              </Link>
             )}
           </div>
         ))}

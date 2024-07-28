@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Modal from '../components/Modal';
 
 const Checkout = () => {
@@ -16,9 +17,14 @@ const Checkout = () => {
     cardCVC: ''
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
-
   const navigate = useNavigate();
+
+  // Function to check if user is authenticated
+  const isAuthenticated = () => {
+    return !!localStorage.getItem('authToken');
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,35 +34,55 @@ const Checkout = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isAuthenticated()) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+
+    const token = localStorage.getItem('authToken'); // Retrieve the token from localStorage
+
     const totalPrice = cart.reduce((total, item) => total + item.amount * item.quantity, 0);
     const newOrder = {
-      id: new Date().getTime(),
       ...formData,
       date: new Date().toISOString(),
       totalPrice,
       completed: false, // Set to false initially
       products: cart
     };
-  
-    // Get existing orders from localStorage
-    const existingOrders = JSON.parse(localStorage.getItem('orderDetails')) || [];
-  
-    // Append new order to existing orders
-    const updatedOrders = [...existingOrders, newOrder];
-  
-    // Save updated orders back to localStorage
-    localStorage.setItem('orderDetails', JSON.stringify(updatedOrders));
-  
-    setOrderDetails(newOrder);
-    setIsModalOpen(true);
+
+    try {
+      await axios.post('http://localhost:5000/orders', newOrder, {
+        headers: { Authorization: `Bearer ${token}` } // Include token in headers
+      });
+      console.log('Order placed successfully');
+      setOrderDetails(newOrder);
+      setIsModalOpen(true);
+      clearCart(); // Clear the cart after placing the order
+    } catch (error) {
+      console.error('Error placing order:', error);
+    }
   };
-  
+
   const handleConfirm = () => {
-    clearCart();
     navigate('/thank-you');
     setIsModalOpen(false);
+  };
+
+  const handleCloseLoginModal = () => {
+    setIsLoginModalOpen(false);
+  };
+
+  const handleRedirectToLogin = () => {
+    navigate('/login');
+    setIsLoginModalOpen(false);
+  };
+
+  const handleRedirectToRegister = () => {
+    navigate('/signup');
+    setIsLoginModalOpen(false);
   };
 
   const totalPrice = cart.reduce((total, item) => total + item.amount * item.quantity, 0);
@@ -200,9 +226,9 @@ const Checkout = () => {
         </div>
       </div>
 
+      {/* Order Confirmation Modal */}
       <Modal 
         isOpen={isModalOpen} 
-        // onClose={handleCancel} 
         onConfirm={handleConfirm}
       >
         <h2 className="text-lg font-bold mb-4">Order Confirmation</h2>
@@ -215,6 +241,25 @@ const Checkout = () => {
           <p className="mt-4 text-[15px]">Order placed on {orderDetails?.date}</p>
         </div>
         <p className="mt-4 font-semibold">Are you sure you want to place the order?</p>
+      </Modal>
+
+      {/* Login/Signup Modal */}
+      <Modal 
+        isOpen={isLoginModalOpen} 
+        onConfirm={handleCloseLoginModal}
+      >
+        <h2 className="text-lg font-bold mb-4">Authentication Required</h2>
+        <p className="mb-4">Please log in to place an order.</p>
+        <button 
+          className="bg-blue-500 text-white px-4 py-2 rounded mr-2" 
+          onClick={handleRedirectToLogin}>
+          Login
+        </button>
+        <button 
+          className="bg-green-500 text-white px-4 py-2 rounded" 
+          onClick={handleRedirectToRegister}>
+          Register
+        </button>
       </Modal>
     </div>
   );

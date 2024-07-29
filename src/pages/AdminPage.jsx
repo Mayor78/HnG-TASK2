@@ -1,34 +1,52 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import loader from '../assets/Spinner-2.gif';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import loader from '../assets/loader2.gif';
+import bellIcon from '../assets/bellIcon.gif'; // Ensure the path is correct
 
 const AdminPage = () => {
-  const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
+  const [deliveryDate, setDeliveryDate] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentOrderId, setCurrentOrderId] = useState(null);
-  const [currentUserId, setCurrentUserId] = useState(null);
-  const [deliveryDate, setDeliveryDate] = useState('');
+  const [admin, setAdmin] = useState(null);
+  const [userOrderCounts, setUserOrderCounts] = useState(new Map());
+  const [newOrderUsers, setNewOrderUsers] = useState(new Set());
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const storedAdmin = localStorage.getItem('admin');
+    if (storedAdmin) {
+      setAdmin(JSON.parse(storedAdmin));
+    }
+
     const fetchData = async () => {
-      setLoading(true);
-      const token = localStorage.getItem('authToken'); // Retrieve the token from localStorage
-
       try {
-        const [ordersResponse, usersResponse] = await Promise.all([
-          axios.get('http://localhost:5000/orders', {
-            headers: { Authorization: `Bearer ${token}` }
-          }),
-          axios.get('http://localhost:5000/users', {
-            headers: { Authorization: `Bearer ${token}` }
-          })
-        ]);
-
-        setOrders(ordersResponse.data);
+        const token = localStorage.getItem('authToken');
+        const usersResponse = await axios.get('http://localhost:5000/users', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const ordersResponse = await axios.get('http://localhost:5000/orders', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setUsers(usersResponse.data);
+        setOrders(ordersResponse.data);
+
+        const initialOrderCounts = new Map();
+        ordersResponse.data.forEach(order => {
+          const userId = order.userId;
+          if (!initialOrderCounts.has(userId)) {
+            initialOrderCounts.set(userId, 0);
+          }
+          initialOrderCounts.set(userId, initialOrderCounts.get(userId) + order.products.length);
+        });
+        setUserOrderCounts(initialOrderCounts);
+
+        const userIdsWithNewOrders = new Set(ordersResponse.data.map(order => order.userId));
+        setNewOrderUsers(userIdsWithNewOrders);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError('Error fetching data');
@@ -40,24 +58,77 @@ const AdminPage = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const eventSource = new EventSource('http://localhost:5000/events');
+  
+    eventSource.onmessage = (event) => {
+      console.log('SSE message received:', event.data);
+      const newOrderNotification = JSON.parse(event.data);
+      
+           
+
+      toast.info(`New order from User ID: ${newOrderNotification.userId}`, {
+        // autoClose: 5000,
+        // position: toast.POSITION.TOP_RIGHT,
+      });
+      
+      setNewOrderUsers(prevState => new Set([...prevState, newOrderNotification.userId]));
+  
+      setUserOrderCounts(prevState => {
+        const updatedCounts = new Map(prevState);
+        if (updatedCounts.has(newOrderNotification.userId)) {
+          updatedCounts.set(newOrderNotification.userId, updatedCounts.get(newOrderNotification.userId) + 1);
+        } else {
+          updatedCounts.set(newOrderNotification.userId, 1);
+        }
+        return updatedCounts;
+      });
+    };
+  
+    eventSource.onerror = (error) => {
+      console.error('SSE Error:', error);
+      eventSource.close();
+    };
+  
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+  ;
+
+  // Sort users based on new orders and order counts
+  const sortedUsers = React.useMemo(() => {
+    return [...users].sort((a, b) => {
+      const aOrderCount = userOrderCounts.get(a._id) || 0;
+      const bOrderCount = userOrderCounts.get(b._id) || 0;
+      return bOrderCount - aOrderCount;
+    });
+  }, [users, userOrderCounts]);
+
   const handleAcceptOrder = (orderId) => {
+    console.log(`Accepting order with ID: ${orderId}`);
     setCurrentOrderId(orderId);
+    console.log('Current order ID set to:', orderId);
   };
 
   const handleConfirmOrder = async () => {
+    console.log(`Confirming order with ID: ${currentOrderId} and delivery date: ${deliveryDate}`);
+
     if (!currentOrderId) {
       console.error('No order ID selected');
       return;
     }
 
-    const token = localStorage.getItem('authToken'); // Retrieve the token from localStorage
+    const token = localStorage.getItem('authToken');
 
     try {
-      await axios.post(`http://localhost:5000/orders/${currentOrderId}/confirm`, {
+      const response = await axios.post(`http://localhost:5000/orders/${currentOrderId}/confirm`, {
         deliveryDate: deliveryDate
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
+
+      console.log('Order confirmed:', response.data);
 
       const updatedOrders = orders.map(order =>
         order._id === currentOrderId ? {
@@ -67,7 +138,6 @@ const AdminPage = () => {
         } : order
       );
       setOrders(updatedOrders);
-      localStorage.setItem('orderDetails', JSON.stringify(updatedOrders));
       setCurrentOrderId(null);
       setDeliveryDate('');
     } catch (err) {
@@ -76,23 +146,26 @@ const AdminPage = () => {
     }
   };
 
-  useEffect(() => {
-    const updateOrderStatus = () => {
-      const now = new Date();
-      const updatedOrders = orders.map(order => {
-        if (order.deliveryDate && new Date(order.deliveryDate) < now && !order.completed) {
-          return { ...order, completed: true };
-        }
-        return order;
+  const handleDeliverOrder = async (orderId) => {
+    const token = localStorage.getItem('authToken');
+
+    try {
+      await axios.post(`http://localhost:5000/orders/${orderId}/deliver`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
       });
+
+      const updatedOrders = orders.map(order =>
+        order._id === orderId ? {
+          ...order,
+          status: 'Delivered'
+        } : order
+      );
       setOrders(updatedOrders);
-      localStorage.setItem('orderDetails', JSON.stringify(updatedOrders));
-    };
-
-    const intervalId = setInterval(updateOrderStatus, 60000);
-
-    return () => clearInterval(intervalId);
-  }, [orders]);
+    } catch (err) {
+      console.error('Error delivering order:', err);
+      setError('Error delivering order');
+    }
+  };
 
   if (loading) {
     return (
@@ -106,27 +179,29 @@ const AdminPage = () => {
     return <div className="text-red-500">{error}</div>;
   }
 
-  const currentUserOrders = orders.filter(order => {
-    const orderUserId = order.userId && typeof order.userId === 'object' ? order.userId._id : order.userId;
-    return orderUserId === currentUserId;
-  });
-
-  // Debugging
-  console.log('Users:', users);
-  console.log('Orders:', orders);
-  console.log('Current User ID:', currentUserId);
-  console.log('Current User Orders:', currentUserOrders);
+  const currentUserOrders = orders
+    .filter(order => {
+      const orderUserId = order.userId && typeof order.userId === 'object' ? order.userId._id : order.userId;
+      return orderUserId === currentUserId;
+    })
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-600">Admin Page</h1>
+      <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-600">
+        Welcome, {admin ? admin.email : 'Admin'}
+      </h1>
+      <ToastContainer />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="col-span-1 bg-white shadow-md rounded-lg p-6">
+        <div className="col-span-1 bg-white shadow-md rounded-lg p-6 relative">
           <h2 className="text-2xl font-bold mb-4 text-blue-500">Users</h2>
+          <img src={bellIcon} alt="Notification Bell" className={`absolute top-4 right-4 ${newOrderUsers.size > 0 ? 'block' : 'hidden'} w-8 h-8`} />
           <ul>
-            {users.map(user => (
-              <li key={user._id} className="mb-2 p-2 border-b hover:bg-gray-100 cursor-pointer" onClick={() => setCurrentUserId(user._id)}>
+            {sortedUsers.map(user => (
+              <li key={user._id} className={`mb-2 p-2 border-b hover:bg-gray-100 cursor-pointer ${newOrderUsers.has(user._id) ? 'text-red-600' : ''}`} onClick={() => setCurrentUserId(user._id)}>
+                {newOrderUsers.has(user._id) && <img src={bellIcon} alt="Notification" className="inline-block w-6 h-6 mr-2" />}
                 {user.name} ({user.email})
+                {newOrderUsers.has(user._id) && <span className="ml-2 text-red-600">*</span>}
               </li>
             ))}
           </ul>
@@ -143,55 +218,52 @@ const AdminPage = () => {
                     <h2 className="text-xl font-bold mb-2 text-blue-500">Order ID: {order._id}</h2>
                     <p className="text-lg"><strong>Date:</strong> {new Date(order.date).toLocaleString()}</p>
                     <p className="text-lg"><strong>Total Price:</strong> ${order.totalPrice}</p>
-                    <p className={`mt-2 inline-block px-3 py-1 rounded-full text-white ${order.completed ? 'bg-green-500' : 'bg-yellow-500'}`}>
-                      Status: {order.completed ? 'Completed' : 'Pending'}
-                    </p>
-                    {order.completed && (
-                      <p className="mt-2 text-lg"><strong>Delivery Date:</strong> {new Date(order.deliveryDate).toLocaleDateString()}</p>
-                    )}
-                    {currentOrderId === order._id && (
-                      <>
-                        <input 
+                    {order.products.map((product, index) => (
+                      <div key={index} className="flex items-center mb-2">
+                        <img src={product.image} alt={product.name} className="w-16 h-16 rounded mr-4" />
+                        <div>
+                          <p className="text-lg font-semibold">{product.name}</p>
+                          <p className="text-gray-700">Quantity: {product.quantity}</p>
+                          <p className="text-gray-700">Price: ${product.amount}</p>
+                        </div>
+                      </div>
+                    ))}
+                    <p className="text-lg"><strong>Delivery Date:</strong> {order.deliveryDate || 'Processing'}</p>
+                    <p className="text-lg"><strong>Status:</strong> {order.completed ? 'Completed' : 'Pending'}</p>
+                    <p className="text-lg"><strong>Order Status:</strong> {order.status}</p>
+                    {!order.completed && (
+                      <div>
+                        <input
                           type="date"
+                          className="border rounded p-2 mb-2 w-full"
                           value={deliveryDate}
                           onChange={(e) => setDeliveryDate(e.target.value)}
-                          className="border p-2 rounded w-full mt-4"
                         />
-                        <button 
-                          onClick={handleConfirmOrder} 
-                          className="mt-4 w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200"
+                        <button
+                          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-2"
+                          onClick={() => {
+                            handleAcceptOrder(order._id);
+                            handleConfirmOrder(); // Confirm the order immediately after accepting it
+                          }}
                         >
-                          Confirm Order
+                          Accept Order
                         </button>
-                      </>
+                      </div>
                     )}
-                    {!order.completed && (
-                      <button 
-                        onClick={() => handleAcceptOrder(order._id)} 
-                        className="mt-4 w-full py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200"
+                    {order.completed && order.status !== 'Delivered' && (
+                      <button
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-2"
+                        onClick={() => handleDeliverOrder(order._id)}
                       >
-                        Accept Order
+                        Mark as Delivered
                       </button>
                     )}
-                    <div className="mt-4">
-                      <h3 className="text-xl font-semibold mb-2 text-blue-600">Products:</h3>
-                      {order.products.map((product, index) => (
-                        <div key={index} className="flex items-center mb-2">
-                          <img src={product.image} alt={product.title} className="w-16 h-16 object-cover mr-2 rounded" />
-                          <div>
-                            <p className="text-lg"><strong>Title:</strong> {product.title}</p>
-                            <p className="text-lg"><strong>Price:</strong> ${product.price}</p>
-                            <p className="text-lg"><strong>Quantity:</strong> {product.quantity}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 ))
               )}
             </div>
           ) : (
-            <p className="text-lg text-center">Select a user to view their orders</p>
+            <p>Please select a user to see their orders.</p>
           )}
         </div>
       </div>

@@ -61,17 +61,20 @@ const Orders = () => {
         </div>
       );
     }
-
+  
     if (orders.length === 0) {
       return <p>No orders found.</p>;
     }
-
-    const filteredOrders = orders.filter((order) => {
+  
+    // Sort orders by date in descending order
+    const sortedOrders = orders.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+    const filteredOrders = sortedOrders.filter((order) => {
       if (filter === 'completed') return order.completed === true;
       if (filter === 'uncompleted') return order.completed === false;
       return false;
     });
-
+  
     return filteredOrders.map((order) => (
       <div key={order._id} className="border rounded p-4 mb-4">
         <h3 className="text-lg font-semibold md:font-bold">Order ID: {order._id}</h3>
@@ -111,6 +114,7 @@ const Orders = () => {
       </div>
     ));
   };
+  
 
   return (
     <div className="container mx-0 md:mx-auto p-7 bg-white w-[100vw] md:w-[60vw] lg:w-[60vw]">

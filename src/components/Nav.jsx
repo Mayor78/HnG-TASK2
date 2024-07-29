@@ -85,22 +85,16 @@ const Nav = () => {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      // Optionally, make an API request to log out if needed
-      // await axios.post('http://localhost:5000/logout');
+  const { logout } = useUser();
 
-      // Clear token and user data
-      localStorage.removeItem('authToken');
-      setUser(null); // Clear user context
-
-      // Redirect to login page
-      navigate('/login');
-      window.location.reload(); // Optionally reload the page to reflect changes
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
+const handleLogout = () => {
+  logout();
+ // Redirect to login page
+ navigate('/login');
+ window.location.reload(); 
+};
+      // Optionally reload the page to reflect changes
+   
 
   const closeLoginPrompt = () => {
     setShowLoginPrompt(false);

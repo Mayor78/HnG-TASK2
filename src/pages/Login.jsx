@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+// Login.js
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext'; // Import the AuthContext
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext); // Use the AuthContext
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,14 +21,19 @@ const Login = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/login', formData);
-      const { token } = response.data;
+      const { token, user } = response.data;
 
-      // Ensure the token is saved under the same key
-      localStorage.setItem('authToken', token);
+      login(token, user.role); // Call login from AuthContext
 
       toast.success('Login successful!');
-      navigate('/');
-      window.location.reload();
+
+      if (user.role === 'admin') {
+        navigate('/admin'); // Admin page
+        window.location.reload();
+      } else {
+        navigate('/'); // Homepage
+        window.location.reload();
+      }
     } catch (error) {
       console.error('Error logging in:', error);
       toast.error('Login failed. Please check your credentials.');
@@ -37,7 +45,6 @@ const Login = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
       <div className="flex bg-white shadow-md rounded-lg overflow-hidden">
-        {/* Right side */}
         <div className="bg-green-500 text-white p-6 w-1/2 flex flex-col justify-center">
           <h2 className="text-2xl font-semibold mb-4">Welcome back!</h2>
           <p className="text-sm">
@@ -47,7 +54,6 @@ const Login = () => {
             No account yet? <a href="/signup" className="underline">Sign up</a>.
           </p>
         </div>
-        {/* Left side */}
         <div className="p-6 bg-white w-1/2">
           <h2 className="text-2xl font-semibold mb-4">Signin</h2>
           <form onSubmit={handleSubmit}>

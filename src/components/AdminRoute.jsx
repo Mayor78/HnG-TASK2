@@ -1,13 +1,13 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
 
-const AdminRoute = ({ children }) => {
-  const { user } = useUser();
+const AdminRoute = ({ children, role }) => {
+  const token = localStorage.getItem('authToken');
+  const userRole = localStorage.getItem('userRole');
 
-  // Redirect to login if not logged in or not an admin
-  if (!user || user.role !== 'admin') {
-    return <Navigate to="/login" replace />;
+  if (!token || (role && userRole !== role)) {
+    // If no token or role doesn't match, redirect to login
+    return <Navigate to="/login" />;
   }
 
   return children;

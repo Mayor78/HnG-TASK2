@@ -1,6 +1,6 @@
 import React from 'react';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
 import Layout from './components/Layout.jsx';
 import SignUp from './pages/SignUp.jsx';
@@ -28,6 +28,7 @@ import AdminPage from './pages/AdminPage.jsx';
 import { UserProvider } from './context/UserContext.jsx';
 import AdminRoute from './components/AdminRoute'; // Import AdminRoute
 import ProtectedRoutes from './pages/ProtectedRoutes.jsx';
+import AuthProvider from './context/AuthContext.jsx';
 
 const router = createBrowserRouter([
   {
@@ -72,6 +73,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <AuthProvider>
     <UserProvider>
       <ProductsProvider>
         <CartProvider>
@@ -80,5 +82,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </CartProvider>
       </ProductsProvider>
     </UserProvider>
+    </AuthProvider>
   </React.StrictMode>
 );

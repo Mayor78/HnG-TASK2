@@ -23,7 +23,7 @@ const Logout = () => {
       
       // Navigate to the homepage or login page and reload the page
       navigate('/');
-      window.location.reload();
+    //   window.location.reload();
     } catch (error) {
       console.error('Error logging out:', error);
       toast.error('Logout failed. Please try again.');

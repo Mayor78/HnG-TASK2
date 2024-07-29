@@ -1,47 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 import { motion } from 'framer-motion';
-import { useUser } from '../context/UserContext';
-import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 
 const Header = () => {
+  const { auth, logout } = useContext(AuthContext);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { user, setUser } = useUser(); // Using UserContext
   const navigate = useNavigate();
 
   const handleToggle = () => setShow(!show);
 
-  const handleLogout = async () => {
-    setLoading(true);
-
-    try {
-      // Optionally, make an API request to log out
-      await axios.post('http://localhost:5000/logout');
-
-      // Clear token from local storage
-      localStorage.removeItem('authToken');
-      
-      // Clear user context
-      if (setUser) setUser(null);
-
-      toast.success('Logged out successfully!');
-      
-      // Navigate to the login page and reload
-      navigate('/login');
-      window.location.reload();
-    } catch (error) {
-      console.error('Error logging out:', error);
-      toast.error('Logout failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+  const handleLogout = () => {
+    logout();
+    toast.success('Logged out successfully!');
+    navigate('/login');
   };
 
   const containerVariants = {
-    hidden: { height: 0, opacity: 0, x: '-100%' }, // Slide in from left
+    hidden: { height: 0, opacity: 0, x: '-100%' },
     visible: { height: 'auto', opacity: 1, x: 0, transition: { duration: 0.8 } }
   };
 
@@ -79,10 +58,10 @@ const Header = () => {
                       <Link to={'/cart'}>Bathroom</Link>
                     </motion.li>
                     <motion.li variants={itemVariants} initial="hidden" animate="visible" className='py-3'>
-                      <Link to={'/login'}>Living Area</Link>
+                      <Link to={'/living-area'}>Living Area</Link>
                     </motion.li>
                     <hr className='mt-[30px]' />
-                    {user ? (
+                    {auth.token ? (
                       <motion.li variants={itemVariants} initial="hidden" animate="visible" className='py-3 mt-3'>
                         <button 
                           onClick={handleLogout} 
@@ -111,40 +90,6 @@ const Header = () => {
                 </motion.div>
               )}
             </div>
-
-            {/* <ul className='hidden md:flex justify-evenly gap-4'>
-              <li className='text-white font-semibold text-[20px]'>
-                <Link to={'/about'}>Kitchen & Dining</Link>
-              </li>
-              <li className='text-white font-semibold text-[20px]'>
-                <Link to={'/bedroom'}>Bedroom</Link>
-              </li>
-              {user ? (
-                <li className='text-white font-semibold text-[20px]'>
-                  <button 
-                    onClick={handleLogout} 
-                    className='text-red-500 hover:bg-orange-200 hover:text-white'
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <div className="flex justify-center items-center">
-                        <svg className="animate-spin h-5 w-5 text-white mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 118 8V12H4z"></path>
-                        </svg>
-                        Logging out...
-                      </div>
-                    ) : (
-                      'Logout'
-                    )}
-                  </button>
-                </li>
-              ) : (
-                <li className='text-white font-semibold text-[20px]'>
-                  <Link to={'/login'} className=''>Login</Link>
-                </li>
-              )}
-            </ul> */}
           </div>
         </div>
       </nav>

@@ -44,3 +44,26 @@
     font-style: normal;
   }
   
+
+  .glow{
+   
+    background: linear-gradient(90deg, #fff 0%, #fff, 100%);
+    animation: glow 2s ease 0s infinite normal forwards;
+  }
+
+  @keyframes glow {
+   /* Copy this code after the above code */
+
+   0% {
+    opacity: 1;
+    }
+  
+    50% {
+    opacity: 0.2;
+    }
+  
+    100% {
+    opacity: 1;
+    }
+  }
+  

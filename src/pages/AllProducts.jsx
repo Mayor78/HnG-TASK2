@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ProductCard from '../sales/ProductCard';
 import loader from '../assets/Spinner-2.gif';
+import LoaderFrame from '../components/LoaderFrame';
 
 const AllProducts = () => {
   const productsPerPage = 6; // Number of products to show per page
@@ -38,7 +39,7 @@ const AllProducts = () => {
 
       setTimeout(() => {
         setLoadingProducts(newProducts.map(() => false)); // Simulate loading delay and set all products to loaded state
-      }, 1000); // Adjust the timeout as needed
+      }, 3000); // Adjust the timeout as needed
     } catch (err) {
       console.error('Error fetching products:', err);
     }
@@ -75,7 +76,8 @@ const AllProducts = () => {
           <div key={index} className="relative">
             {loadingProducts[index] ? (
               <div className="flex justify-center items-center h-full">
-                <img src={loader} alt="loading..." className="w-12 h-12" />
+                <LoaderFrame/>
+                {/* <img src={loader} alt="loading..." className="w-12 h-12" /> */}
               </div>
             ) : (
               <Link >

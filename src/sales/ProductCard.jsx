@@ -15,22 +15,22 @@ const ProductCard = ({ id, image, name, description, oldprice, amount, isNew }) 
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden relative group">
       <div className="relative">
-        <Link to={`/product/${id}`}>
+        <Link to={`/products/${id}`}>
           <img src={image} alt={name} className="w-full h-64 object-cover cursor-pointer" />
         </Link>
         {isNew && (
           <div className="absolute top-0 right-0 bg-green-600 text-white text-xs px-2 py-1">NEW</div>
         )}
         <IoIosHeartEmpty className="absolute top-2 left-2 text-gray-600 cursor-pointer" size={24} />
-        <Link to={`/product/${id}`} className="absolute inset-0 w-full h-full" />
-        <Link to={`/product/${id}`} className="hidden group-hover:block md:block absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-blue-500 text-white rounded-md">
+        <Link to={`/products/${id}`} className="absolute inset-0 w-full h-full" />
+        <Link to={`/products/${id}`} className="hidden group-hover:block md:block absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-blue-500 text-white rounded-md">
           View Details
         </Link>
       </div>
       <div className="p-4">
         <h2 className="text-xl font-semibold mb-2">{name}</h2>
         <p className="text-gray-600 mb-4">{description}</p>
-        <Link to={`/product/${id}`} className="text-blue-500 hover:underline">Read More</Link>
+        <Link to={`/products/${id}`} className="text-blue-500 hover:underline">Read More</Link>
         <div className="flex items-center justify-between mt-2">
           <div>
             <span className="text-red-500 line-through mr-2">${oldprice}</span>

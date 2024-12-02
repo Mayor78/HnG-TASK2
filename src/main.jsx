@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
 import Layout from './components/Layout.jsx';
@@ -29,6 +30,8 @@ import { UserProvider } from './context/UserContext.jsx';
 import AdminRoute from './components/AdminRoute'; // Import AdminRoute
 import ProtectedRoutes from './pages/ProtectedRoutes.jsx';
 import AuthProvider from './context/AuthContext.jsx';
+import CreateProduct from './pages/CreateProduct.jsx';
+import SearchPage from './pages/SearchPage.jsx';
 
 const router = createBrowserRouter([
   {
@@ -37,26 +40,33 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Home /> },
-      { path: 'signup', element: <SignUp /> },
       { path: 'bedroom', element: <Bedroom /> },
-      { path: 'login', element: <Login /> },
       { path: 'about', element: <About /> },
       { path: 'services', element: <Services /> },
       { path: 'cart', element: <CartPage /> },
       { path: 'checkout', element: <Checkout /> },
       { path: 'all-products', element: <AllProducts /> },
       { path: 'transfer-payment', element: <TransferPayment /> },
-      { path: 'product/:id', element: <ProductDetails /> },
+      { path: 'products/:id', element: <ProductDetails /> },
       { path: 'mobile-product/:id', element: <MobileProductDetails /> },
       { path: 'search-results', element: <SearchResults /> },
       { path: 'profile', element: <Profile /> },
       { path: 'thank-you', element: <Thanks /> },
+     
       { 
         path: 'orders', 
         element: (
           <ProtectedRoutes>
             <Orders />
           </ProtectedRoutes>
+        ),
+      },
+      {
+        path: 'admin/create-product', 
+        element: (
+          <AdminRoute>
+            <CreateProduct />
+          </AdminRoute>
         ),
       },
       { 
@@ -69,19 +79,24 @@ const router = createBrowserRouter([
       },
     ],
   },
+  { path: 'signup', element: <SignUp /> },
+  { path: 'login', element: <Login /> },
+  { path: 'search', element: <SearchPage /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
-    <UserProvider>
-      <ProductsProvider>
-        <CartProvider>
-          <ToastContainer />
-          <RouterProvider router={router} />
-        </CartProvider>
-      </ProductsProvider>
-    </UserProvider>
+      <UserProvider>
+        <ProductsProvider>
+          <CartProvider>
+            <ToastContainer />
+            <RouterProvider router={router} />
+          </CartProvider>
+        </ProductsProvider>
+      </UserProvider>
     </AuthProvider>
+
+    
   </React.StrictMode>
 );

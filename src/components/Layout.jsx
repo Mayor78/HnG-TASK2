@@ -1,12 +1,25 @@
-import React from 'react'
-import Header from './Header'
+
+// import Header from './Header'
+
 import { Outlet } from 'react-router-dom'
 import Footer from '../components/Footer'
+import FirstHeader from './FirstHeader'
+import Nav from './Nav'
+
+
+
 
 const Layout = () => {
   return (
     <div>
-        <Header/>
+
+
+
+        <FirstHeader/>
+        <Nav/>
+       
+        
+      
          <Outlet/>
 
 
@@ -21,7 +34,7 @@ const Layout = () => {
 
 
          
-        
+          
           <Footer/>
     </div>
   )

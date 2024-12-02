@@ -4,7 +4,7 @@ import { CartContext } from '../context/CartContext';
 import { BsCart } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 
-const NewInStoreItem = ({ id, title, image, price, description }) => {
+const FeatureProductCard = ({ id, title, image, price, description }) => {
   // console.log({id, title, image, price, description });
   const { addToCart } = useContext(CartContext);
   const [isHovered, setIsHovered] = useState(false);
@@ -89,4 +89,4 @@ const NewInStoreItem = ({ id, title, image, price, description }) => {
   );
 };
 
-export default NewInStoreItem;
+export default FeatureProductCard;

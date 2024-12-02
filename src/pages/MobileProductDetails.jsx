@@ -10,48 +10,41 @@ const MobileProductDetails = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-    const fetchProducts = async () => {
+    window.scroll(0,0)
+    const fetchProduct = async () => {
+      window.scrollTo(0, 0);
       try {
-        // Fetch the products from both APIs
-        const [githubResponse, fakestoreResponse] = await Promise.all([
+        console.log(`Fetching product from: https://fakestoreapi.com/products/${id}`);
+        const [productsResponse, newProductsResponse] = await Promise.all([
           axios.get('https://mayor78.github.io/fake-api2/data.json'),
-          axios.get('https://fakestoreapi.com/products')
+          axios.get(`https://fakestoreapi.com/products/${id}`),
         ]);
-
-        // Get products from both responses
-        const githubProducts = [...(githubResponse.data.products || []), ...(githubResponse.data.newProducts || [])];
-        const fakestoreProducts = fakestoreResponse.data || [];
-
-        // Log responses for debugging
-        console.log('GitHub Products API Response:', githubProducts);
-        console.log('Fakestore Products API Response:', fakestoreProducts);
-
-        // Combine products from both sources
-        const allProducts = [
-          ...githubProducts.map(p => ({ ...p, source: 'github' })),
-          ...fakestoreProducts.map(p => ({ ...p, source: 'fakestore' }))
-        ];
-
-        // Find the product by ID, accommodating ID ranges
-        const foundProduct = allProducts.find(prod => prod.id.toString() === id);
-
-        if (foundProduct) {
-          setProduct(foundProduct);
+  
+        console.log('Products API response:', productsResponse.data);
+        console.log('New Products API response:', newProductsResponse.data);
+  
+        // Handle the case where newProductsResponse.data is not an array
+        const productFromApi = Array.isArray(newProductsResponse.data)
+          ? newProductsResponse.data.find(p => p._id === id)
+          : newProductsResponse.data; // Assuming it's a single object if not an array
+  
+        if (productFromApi) {
+          setProduct(productFromApi);
         } else {
+          console.log('Product not found in API response');
           setError('Product not found');
         }
       } catch (err) {
-        console.error('Error fetching products:', err);
-        setError('Error fetching products');
+        console.error('Error fetching product:', err);
+        setError('Error fetching product');
       } finally {
         setLoading(false);
       }
     };
-
-    fetchProducts();
+  
+    fetchProduct();
   }, [id]);
-
+  
   if (loading) {
     return (
       <div className='flex justify-center items-center'>

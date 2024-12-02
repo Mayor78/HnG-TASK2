@@ -3,6 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import loader from '../assets/Spinner-2.gif';
 import { CartContext } from '../context/CartContext';
+import NewInStore from '../sales/NewInStore';
+import { IoMdCall } from "react-icons/io";
+import FeatureProduct from '../components/FeaturePrdouct';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -105,13 +108,16 @@ const ProductDetails = () => {
                 oldprice: product.oldPrice,
                 id: product.id
               })}
-              className='bg-orange-400 mx-3 md:mx-0 text-white p-4 rounded-md mt-10 mb-3 md:mt-20 hover:bg-orange-300'
+              className='bg-orange-400 hidden md:block mx-3 md:mx-0 text-white p-4 rounded-md mt-10 mb-3 md:mt-20 hover:bg-orange-300'
             >
               Add To Cart
             </button>
           </div>
         </div>
+       
       </div>
+
+     
       <div className='bg-white shadow-lg border border-solid md:mx-10 mt-7'>
         <h2 className='mb-10 mt-20 mx-2 text-3xl font-semibold'>Product Details</h2>
         <hr />
@@ -125,6 +131,28 @@ const ProductDetails = () => {
           <p className='hidden md:block'> {product.description || product.info}</p>
         </div>
       </div>
+      <div className='sticky bottom-0 md:hidden  flex my-2 z-'>
+            <div className='border-orange-400 bg-white border-2 p-2 rounded-md text-orange-500'>
+              <IoMdCall className='mt-2'/>
+            </div>
+            <button 
+              onClick={() => addToCart({
+                image: product.image || product.picture,
+                name: product.title || product.name,
+                description: product.description || product.info,
+                amount: product.price || product.amount,
+                oldprice: product.oldPrice,
+                id: product.id
+              })}
+              className='bg-orange-400 mx-3 block md:hidden w-full   md:mx-0 text-white p-4 rounded-md  hover:bg-orange-300'
+            >
+              Add To Cart
+            </button>
+          </div>
+      <div className='mt-2'>
+      <FeatureProduct/>
+      </div>
+      
     </div>
   );
 };

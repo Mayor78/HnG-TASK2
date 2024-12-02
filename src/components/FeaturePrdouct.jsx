@@ -3,9 +3,8 @@ import axios from 'axios';
 import NewInStoreItem from '../components/NewInStoreItem';
 import { Link } from 'react-router-dom';
 import loader from '../assets/Spinner-2.gif';
-import { FaChevronRight } from "react-icons/fa";
 
-const NewInStore = () => {
+const FeatureProduct = () => {
   const [newProducts, setNewProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -47,18 +46,14 @@ const NewInStore = () => {
   if (error) {
     return <div>{error}</div>;
   }
-
-  // Slice the last 8 products
   const lastProducts = newProducts.slice(-15).reverse();
+ 
 
   return (
     <div className='bg-white rounded-lg'>
-      <div className='bg-black rounded-lg text-white flex justify-between '>
-        <h1 className='md:text-3xl text-md mt-2 font-bold mx-2 mb-6'>New Arrivals</h1>
-        <Link to="/all-products" className=" mx-2 flex text-md mt-2 gap-1">View All <FaChevronRight className='mt-1 hidden md:block'/></Link>
-      </div>
+      <h2 className=' bg-orange-500 text-white rounded-md p-4 font-semi-bold text-md md:text-3xl'>Feature Product</h2>
       <div className='overflow-hidden px-6'>
-        <div className='flex gap-3 md:flex-wrap md:justify-center  overflow-x-auto whitespace-nowrap scroll-smooth  '>
+        <div className='flex gap-3 overflow-x-auto whitespace-nowrap scroll-smooth hide-scrollbar'>
           {lastProducts.map(product => (
             <div key={product.id} className='flex'>
               <NewInStoreItem {...product} />
@@ -67,10 +62,10 @@ const NewInStore = () => {
         </div>
       </div>
       <div className="text-center mt-4">
-       
+        {/* <Link to="/all-products" className="text-blue-500 hover:underline">View All</Link> */}
       </div>
     </div>
   );
 };
 
-export default NewInStore;
+export default FeatureProduct;

@@ -1,10 +1,10 @@
-import React from 'react'
+
 
 const Footer = () => {
   return (
     < >
-       <div className='big wrapper text-white overflow-hidden  mt-4 bg-blue-950 grid grid-col-1 md:grid-cols-2 lg:grid-cols-4'>
-         
+       <div className='big wrapper text-white  mt-4 bg-blue-950 '>
+         <div className="flex justify-between mx-2  flex-wrap-reverse">
           <div className='contact-container mx-6 md:mx-2 mt-4'>
              <h2 className='font-semibold text-2xl'>Contact Us</h2>
              <div className='mt-7'>
@@ -52,7 +52,7 @@ const Footer = () => {
              <input type="email" placeholder="Enter your email address"  
              className='text-sm text-black mb-4 w-[15rem] py-2 px-2 rounded-md' />
                <label htmlFor=""><i className="fa-solid fa-arrow-right relative text-black right-6"></i></label>
-              <div className='grid grid-cols-4 mx-6 gap-1 md:mx-0 '>
+              <div className='flex flex-wrap mx-6 gap-3 md:mx-0 '>
               <p><i className="fab fa-facebook-f hover:text-blue-500"></i> </p>
              <p><i className="fab fa-twitter hover:text-blue-300"></i> </p>
              <p><i className="fab fa-instagram hover:text-orange-300"></i> </p>
@@ -68,15 +68,16 @@ const Footer = () => {
              
            
              </div>
-           
-          </div>
-          <div className='copyright-container relative left-10 mt-20'>
-             <p className='text-sm'>Terms & condition.</p>
-             <p className='text-sm'>Cookies & Privacy</p>
-             <div>
-              <p className='text-sm'>�� 2023 MayorDev. All rights reserved.</p>
              </div>
           </div>
+          <div className='copyright-containe mb-3 gap-1 flex justify-center '>
+             <p className='text-sm '>Terms & condition.</p>
+             <p className='text-sm'>Cookies & Privacy</p>
+             
+          </div>
+          <div className="flex justify-center">
+              <p className='text-sm'>�� 2023 MayorDev. All rights reserved.</p>
+             </div>
        </div>
       
     </>

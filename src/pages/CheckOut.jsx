@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { CartContext } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -12,14 +12,33 @@ const Checkout = () => {
     city: '',
     postalCode: '',
     country: '',
+    contact: '',
     cardNumber: '',
     cardExpiration: '',
     cardCVC: ''
   });
+  const [existingAddress, setExistingAddress] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch the existing address details from the server or localStorage
+    const fetchExistingAddress = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('http://localhost:5000/user/address', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setExistingAddress(response.data.address); // assuming response.data.address is the user's saved address
+      } catch (error) {
+        console.error('Error fetching address:', error);
+      }
+    };
+
+    fetchExistingAddress();
+  }, []);
 
   // Function to check if user is authenticated
   const isAuthenticated = () => {
@@ -34,6 +53,18 @@ const Checkout = () => {
     });
   };
 
+  const handleAddressFocus = () => {
+    if (existingAddress) {
+      const useExisting = window.confirm('Do you want to use your existing address?');
+      if (useExisting) {
+        setFormData({
+          ...formData,
+          ...existingAddress
+        });
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -42,32 +73,42 @@ const Checkout = () => {
       return;
     }
 
-    const token = localStorage.getItem('authToken'); // Retrieve the token from localStorage
-
-    const totalPrice = cart.reduce((total, item) => total + item.amount * item.quantity, 0);
+    const token = localStorage.getItem('authToken');
+    const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
     const newOrder = {
       ...formData,
       date: new Date().toISOString(),
       totalPrice,
-      completed: false, // Set to false initially
+      completed: false, 
       products: cart
     };
 
     try {
       await axios.post('http://localhost:5000/orders', newOrder, {
-        headers: { Authorization: `Bearer ${token}` } // Include token in headers
+        headers: { Authorization: `Bearer ${token}` }
       });
       console.log('Order placed successfully');
       setOrderDetails(newOrder);
       setIsModalOpen(true);
-      clearCart(); // Clear the cart after placing the order
     } catch (error) {
       console.error('Error placing order:', error);
     }
   };
 
   const handleConfirm = () => {
-    navigate('/thank-you');
+    clearCart(); // Clear the cart
+    setFormData({ // Clear the form fields
+      name: '',
+      address: '',
+      city: '',
+      postalCode: '',
+      country: '',
+      contact: '',
+      cardNumber: '',
+      cardExpiration: '',
+      cardCVC: ''
+    });
+    navigate('/thank-you'); // Navigate to thank-you page
     setIsModalOpen(false);
   };
 
@@ -85,13 +126,12 @@ const Checkout = () => {
     setIsLoginModalOpen(false);
   };
 
-  const totalPrice = cart.reduce((total, item) => total + item.amount * item.quantity, 0);
+  const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Checkout</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Cart Summary */}
         <div>
           <h2 className="text-xl font-semibold mb-2">Order Summary</h2>
           {cart.length === 0 ? (
@@ -103,7 +143,7 @@ const Checkout = () => {
                   <img src={item.image} alt={item.name} className="w-20 h-20 object-cover" />
                   <div>
                     <h3 className="font-semibold">{item.name}</h3>
-                    <p>${item.amount} x {item.quantity}</p>
+                    <p>${item.price} x {item.quantity}</p>
                   </div>
                   <button 
                     className="text-red-500 hover:text-red-700" 
@@ -119,7 +159,6 @@ const Checkout = () => {
           )}
         </div>
 
-        {/* Checkout Form */}
         <div>
           <h2 className="text-xl font-semibold mb-2">Shipping Information</h2>
           <form onSubmit={handleSubmit}>
@@ -141,6 +180,7 @@ const Checkout = () => {
                 name="address" 
                 value={formData.address} 
                 onChange={handleInputChange} 
+                onFocus={handleAddressFocus} 
                 className="w-full p-2 border border-gray-300 rounded" 
                 required 
               />
@@ -175,6 +215,17 @@ const Checkout = () => {
                 type="text" 
                 name="country" 
                 value={formData.country} 
+                onChange={handleInputChange} 
+                className="w-full p-2 border border-gray-300 rounded" 
+                required 
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Contact</label>
+              <input 
+                type="text" 
+                name="contact" 
+                value={formData.contact} 
                 onChange={handleInputChange} 
                 className="w-full p-2 border border-gray-300 rounded" 
                 required 
@@ -219,7 +270,8 @@ const Checkout = () => {
             </div>
             <button 
               type="submit" 
-              className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
+              className="w-full py-2 px-4 bg-blue-500 text-white font-bold rounded hover:bg-blue-600"
+            >
               Place Order
             </button>
           </form>
@@ -227,39 +279,35 @@ const Checkout = () => {
       </div>
 
       {/* Order Confirmation Modal */}
-      <Modal 
-        isOpen={isModalOpen} 
-        onConfirm={handleConfirm}
-      >
-        <h2 className="text-lg font-bold mb-4">Order Confirmation</h2>
-        <div>
-          <h3 className="text-xl font-semibold mb-2">Order Details</h3>
-          <p><strong>Name:</strong> {orderDetails?.name}</p>
-          <p><strong>Address:</strong> {orderDetails?.address}, {orderDetails?.city}, {orderDetails?.country}, {orderDetails?.postalCode}</p>
-          <p><strong>Card Number:</strong> {orderDetails?.cardNumber}</p>
-          <p><strong>Total Price:</strong> ${orderDetails?.totalPrice}</p>
-          <p className="mt-4 text-[15px]">Order placed on {orderDetails?.date}</p>
-        </div>
-        <p className="mt-4 font-semibold">Are you sure you want to place the order?</p>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <h2 className="text-xl font-semibold mb-4">Order Confirmed</h2>
+        <p>Thank you for your order!</p>
+        <button 
+          className="mt-4 py-2 px-4 bg-green-500 text-white font-bold rounded hover:bg-green-600" 
+          onClick={handleConfirm}
+        >
+          OK
+        </button>
       </Modal>
 
-      {/* Login/Signup Modal */}
-      <Modal 
-        isOpen={isLoginModalOpen} 
-        onConfirm={handleCloseLoginModal}
-      >
-        <h2 className="text-lg font-bold mb-4">Authentication Required</h2>
-        <p className="mb-4">Please log in to place an order.</p>
-        <button 
-          className="bg-blue-500 text-white px-4 py-2 rounded mr-2" 
-          onClick={handleRedirectToLogin}>
-          Login
-        </button>
-        <button 
-          className="bg-green-500 text-white px-4 py-2 rounded" 
-          onClick={handleRedirectToRegister}>
-          Register
-        </button>
+      {/* Login Modal */}
+      <Modal isOpen={isLoginModalOpen} onClose={handleCloseLoginModal}>
+        <h2 className="text-xl font-semibold mb-4">Please Login</h2>
+        <p>You need to be logged in to place an order.</p>
+        <div className="flex gap-4 mt-4">
+          <button 
+            className="py-2 px-4 bg-blue-500 text-white font-bold rounded hover:bg-blue-600"
+            onClick={handleRedirectToLogin}
+          >
+            Login
+          </button>
+          <button 
+            className="py-2 px-4 bg-gray-500 text-white font-bold rounded hover:bg-gray-600"
+            onClick={handleRedirectToRegister}
+          >
+            Register
+          </button>
+        </div>
       </Modal>
     </div>
   );

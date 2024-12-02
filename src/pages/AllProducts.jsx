@@ -69,7 +69,7 @@ const AllProducts = () => {
   };
 
   return (
-    <div className="container mx-auto p-7 bg-quaternary">
+    <div className="container mx-auto p-7 bg-slate-50">
       <h1 className="text-2xl font-bold mb-4">All Products</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {displayedProducts.map((product, index) => (
@@ -80,7 +80,7 @@ const AllProducts = () => {
                 {/* <img src={loader} alt="loading..." className="w-12 h-12" /> */}
               </div>
             ) : (
-              <Link >
+              <Link to={`/products/${product.id}`} className="block relative">
                 <ProductCard
                   image={product.image || product.picture}
                   name={shortenText(product.name || product.title, 30)}

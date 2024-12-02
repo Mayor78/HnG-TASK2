@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import  { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 import { motion } from 'framer-motion';
@@ -35,7 +35,11 @@ const Header = () => {
 
   return (
     <>
-      <nav className="backdrop-blur-lg bg-blue-900 p-4 sticky z-10 top-0">
+    <div>
+      <div className='text-white text-3xl md:hidden lg:hidden block'>
+            
+      </div>
+      <nav className="backdrop-blur-lg bg-blue-900 p-4 sticky z-10 flex top-0">
         <Nav />
         <div>
           <div>
@@ -93,6 +97,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
+      </div>
     </>
   );
 };

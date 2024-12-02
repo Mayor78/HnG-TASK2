@@ -14,7 +14,7 @@ export const ProductsProvider = ({ children }) => {
       try {
         const [productsResponse, clearanceResponse] = await Promise.all([
           axios.get('https://mayor78.github.io/fake-api2/data.json'),
-          axios.get('http://localhost:3000/newProducts')
+          axios.get('https://fakestoreapi.com/products')
         ]);
 
         // Assuming both APIs return arrays directly

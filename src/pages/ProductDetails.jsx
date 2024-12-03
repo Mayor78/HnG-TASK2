@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import  { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import loader from '../assets/Spinner-2.gif';
 import { CartContext } from '../context/CartContext';
-import NewInStore from '../sales/NewInStore';
+import { MdAddShoppingCart } from "react-icons/md";
 import { IoMdCall } from "react-icons/io";
 import FeatureProduct from '../components/FeaturePrdouct';
 
@@ -87,11 +87,13 @@ const ProductDetails = () => {
 
   return (
     <div className='product-details p-4 rounded-md mt-4'>
-      <div className='product-image grid md:flex gap-4 mx- md:mx-10 bg-white shadow-lg border border-solid'>
-        <img src={product.image || product.picture} alt={product.title || product.name} className="w-[400px] rounded-md h-[400px]" />
+       <div className='md:flex grid'>
+      <div className='product-image grid md:flex gap-4 mx-0 p-6 w-full md:w-[70%] rounded-sm md:mx-10 bg-white shadow-lg border border-solid'>
+        <img src={product.image || product.picture} alt={product.title || product.name} className="w-[400px]  cursor-zoom-in rounded-md h-[400px]" />
         <div>
           <h1 className='text-3xl mx-3 md:mx-0 font-semi-bold mt-4'>{product.title || product.name}</h1>
           <span className='text-gray-500 mx-3 md:mx-0'>Added by: {'Mayor'}</span>
+          <hr  className='mt-2'/>
           <div className='mt-20 flex gap-3'>
             <p className='text-green-500 mt-2 mx-3 md:mx-0 text-3xl'>${product.price || product.amount}</p>
             {product.oldPrice && (
@@ -108,15 +110,48 @@ const ProductDetails = () => {
                 oldprice: product.oldPrice,
                 id: product.id
               })}
-              className='bg-orange-400 hidden md:block mx-3 md:mx-0 text-white p-4 rounded-md mt-10 mb-3 md:mt-20 hover:bg-orange-300'
+              className='bg-orange-400 w-full hidden text-left shadow-md md:grid grid-cols-2 mx-3 md:mx-0 text-white p-4 rounded-md mt-10 mb-3 md:mt-20 hover:bg-orange-300'
             >
-              Add To Cart
+             <span><MdAddShoppingCart size={30}/></span> Add To Cart
             </button>
           </div>
+          
         </div>
-       
+        
       </div>
+      <div className='bg-white w-full mt-2 md:mt-0 md:w-[20%] p-2 rounded-sm'>
+         <h1 className='poppins-medium mb-2'>Delivery & Return</h1>
+         <hr  className='mb-2'/>
 
+         <h2 className='font-bold'>HNG</h2> 
+         <p className='text-sm mb-2 font-light' >Free delivery on thousands of products in Lagos, Ibadan & Abuja Details</p>
+         <hr />
+         <h1 className='my-2 font-semibold'>Choose your location</h1>
+         <div className='grid'>
+         <select name="state" id="" className='p-2 rounded-md border-2 mx-3 my-3'>
+           <option value="lagos">Lagos</option>
+           <option value="ibadan">Ibadan</option>
+           <option value="abuja">Abuja</option>
+           <option value="Kwara">Kwara</option>
+           <option value="abia">Abia</option>
+           <option value="kano">Kano</option>
+           <option value="gombe">Gombe</option>
+           <option value="river">River</option>
+           <option value="oyo">Oyo</option>
+
+         </select>
+
+         <select name="area" id="" className='p-2 rounded-md border mx-3 my-3'>
+           <option value="north">North</option>
+           <option value="south">South</option>
+           <option value="east">East</option>
+           <option value="west">West</option>
+         </select>
+         </div>
+        
+      </div>
+      </div>
+      
      
       <div className='bg-white shadow-lg border border-solid md:mx-10 mt-7'>
         <h2 className='mb-10 mt-20 mx-2 text-3xl font-semibold'>Product Details</h2>

@@ -138,22 +138,17 @@ const Nav = () => {
           </label>
           <input
             type="search"
-            placeholder="search..."
+            placeholder="Search product, brands and categories "
             value={searchTerm}
             onChange={handleSearchChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            className="w-[30rem] pl-8 mx-0  p-2 rounded-md focus:outline-blue-500 focus:shadow-outline"
+            className="w-[30rem] pl-8 mx-0 text-md p-2 rounded-md focus:outline-blue-500 focus:shadow-outline"
           />
 
-          {searchTerm && (
-            <i
-              className="fa-solid fa-magnifying-glass absolute right-10 top-[0.8rem] cursor-pointer"
-              onClick={handleSearch}
-            ></i>
-          )}
+         
           <h3
-            className=" bg-orange-400 p-2 absolute right-[-5rem] top-[-1px] rounded-md cursor-pointer"
+            className=" bg-orange-400 p-2 hover:bg-orange-500 text-white absolute right-[-5rem] top-[-1px] rounded-md cursor-pointer"
             onClick={handleSearch}
           >
             {" "}
@@ -257,7 +252,7 @@ const Nav = () => {
               <RxHamburgerMenu />
             </h1>
             {nav && (
-              <div className="w-[550px] slide h-[100vh] absolute overflow-scroll top-0 left-0 bg-white rounded-md p-3 shadow-lg z-50 ">
+              <div className="w-full slide h-[100vh] absolute overflow-scroll top-0 left-0 bg-white rounded-md p-3 shadow-lg z-50 ">
                 <div className="flex gap-2">
                   <h2 onClick={toggleNav} className="mt-1">
                     <IoClose className="font-bold text-2xl"/>
@@ -265,7 +260,7 @@ const Nav = () => {
                   <div className="logo-wrapper ">
                     <Link
                       to={"/"}
-                      className=" text-2xl  font-bold mt-2"
+                      className=" text-2xl font-bold mt-2"
                     >
                       HNG
                     </Link>
@@ -298,7 +293,7 @@ const Nav = () => {
           </label>
           <input
             type="search"
-            placeholder="search..."
+            placeholder="Search product, brands and categories"
             value={searchTerm}
             onChange={handleSearchChange}
             onFocus={handleFocus}
@@ -306,16 +301,16 @@ const Nav = () => {
             className="w-full  items-center place-items-center mx-0  pl-10 p-1 rounded-full focus:outline-blue-500 focus:shadow-outline"
           />
 
-          {searchTerm && (
+          {/* {searchTerm && (
             <i
-              className="fa-solid fa-magnifying-glass absolute right-10 top-[0.8rem] cursor-pointer"
+              className="fa-solid fa-magnifying-glas absolute right-10 top-[0.8rem] cursor-pointer"
               onClick={handleSearch}
             ></i>
           )}
           {/* <i
                       className="fa-solid fa-magnifying-glass absolute right-10 top-[0.8rem] cursor-pointer"
                       onClick={handleSearch}
-                    ></i> */}
+                    ></i> */} 
 
           {suggestions.length > 0 && (
             <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full z-50">

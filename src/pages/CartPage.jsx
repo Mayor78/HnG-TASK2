@@ -30,7 +30,7 @@ const CartPage = () => {
       <Link to={'/'} className="text-blue-500 text-2xl hover:underline">Continue Shopping <img src={shopping} alt="" /></Link>
       {cart.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-screen">
-          <h1 className="text-3xl mt-8 text-center">Your cart is empty</h1>
+          <h1 className="text-5xl mt-8 text-center text-white">Your cart is empty</h1>
           <img src={empty} alt="Empty Cart" className="w-1/2"/>
         </div>
       ) : (

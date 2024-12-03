@@ -57,7 +57,7 @@ const NewInStore = () => {
         <h1 className='md:text-3xl text-md mt-2 font-bold mx-2 mb-6'>New Arrivals</h1>
         <Link to="/all-products" className=" mx-2 flex text-md mt-2 gap-1">View All <FaChevronRight className='mt-1 hidden md:block'/></Link>
       </div>
-      <div className='overflow-hidden px-6'>
+      <div className='overflow-hidden px-6 mt-2'>
         <div className='flex gap-3 md:flex-wrap md:justify-center  overflow-x-auto whitespace-nowrap scroll-smooth  '>
           {lastProducts.map(product => (
             <div key={product.id} className='flex'>

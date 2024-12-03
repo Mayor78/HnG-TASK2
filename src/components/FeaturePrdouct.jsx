@@ -51,7 +51,7 @@ const FeatureProduct = () => {
 
   return (
     <div className='bg-white rounded-lg'>
-      <h2 className=' bg-orange-500 text-white rounded-md p-4 font-semi-bold text-md md:text-3xl'>Feature Product</h2>
+      <h2 className=' bg-orange-500 text-white mb-4 rounded-md p-4 font-semi-bold text-md md:text-3xl'>Feature Product</h2>
       <div className='overflow-hidden px-6'>
         <div className='flex gap-3 overflow-x-auto whitespace-nowrap scroll-smooth hide-scrollbar'>
           {lastProducts.map(product => (

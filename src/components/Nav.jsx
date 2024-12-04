@@ -238,7 +238,7 @@ const Nav = () => {
 
             <div className="flex cursor-pointer">
               <CartIcon />
-              <h3 className="mt-1 font-medium poppins-medium">Cart</h3>
+              <Link to={'/cart'} className="mt-1 font-medium poppins-medium">Cart</Link>
             </div>
           </div>
         </div>

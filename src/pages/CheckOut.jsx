@@ -129,7 +129,7 @@ const Checkout = () => {
   const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto text-white p-4">
       <h1 className="text-2xl font-bold mb-4">Checkout</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -139,7 +139,7 @@ const Checkout = () => {
           ) : (
             <div>
               {cart.map((item) => (
-                <div key={item.id} className="flex justify-between items-center p-2 border-b">
+                <div key={item.id} className="flex bg-white rounded-md text-black  justify-between items-center p-2 border-b">
                   <img src={item.image} alt={item.name} className="w-20 h-20 object-cover" />
                   <div>
                     <h3 className="font-semibold">{item.name}</h3>
